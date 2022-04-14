@@ -4,7 +4,8 @@ const router = express.Router();
 const {
     getMembers,
     getMember,
-    updateMember
+    updateMember,
+    deleteMember
 } = require('../controllers/members');
 
 /* GET members listing. */
@@ -15,5 +16,8 @@ router.get('/:id', getMember);
 
 /* PUT member by ID */
 router.put('/:id', updateMember);
+
+/* DELETEE member by ID */
+router.delete('/:id', deleteMember);
 
 module.exports = router;
