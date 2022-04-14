@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  member.init({
+  Member.init({
     name: DataTypes.STRING,
     facebookUrl: DataTypes.STRING,
     instagramUrl: DataTypes.STRING,
