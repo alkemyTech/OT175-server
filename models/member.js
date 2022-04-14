@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     deleted: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'member',
+    modelName: 'Member',
   });
-  return member;
+  return Member;
 };
