@@ -45,7 +45,37 @@ const getMember = async(req, res) => {
     }
 }
 
+const updateMember = async(req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, facebookUrl, instagramUrl, linkedinUrl, image, description } = req.body;
+
+        const member = await Member.findOne({ where: { id, 'deleted': 0 } });
+
+        // Verify if exists members
+        if ( !member ) {
+            return res.status(400).json({msg:'There is no registered member'});
+        }
+
+        // Update data
+        member.update({
+            name,
+            facebookUrl,
+            instagramUrl,
+            linkedinUrl,
+            image,
+            description
+        });
+
+        res.status(200).json({msg: 'Member updated'});
+    } catch (err) {
+        console.log(err);
+        res.status(501).json({msg:'There was a problem getting the members, check with the administrator'})
+    }
+}
+
 module.exports = {
     getMembers,
-    getMember
+    getMember,
+    updateMember
 }
