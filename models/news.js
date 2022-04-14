@@ -1,13 +1,11 @@
-const {Sequelize, Model, DataTypes} = require('sequelize');
-
-class News extends Model{
-    static associate(db){
-        this.belongsTo(db.Categories,{as:'category'})
-        //aclarar con estefany si es one-to-many o many-to-many 
+'use strict';
+const { Model } = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class News extends Model {
+    static associate(models) {
+      this.belongsTo(models.Categories,{as: category})
     }
-};
-
-const NewsSchema = {
+  };News.init({
     id: {
         allowNull: false,
         type: DataTypes.INTEGER,
@@ -30,15 +28,10 @@ const NewsSchema = {
         allowNull:false,
         type: DataTypes.INTEGER
     }
-}
-
-News.init(
-    NewsSchema
-    ,{
+}, {
     sequelize,
     modelName: 'News',
     freezeTableName: true
-});
-
-module.exports= (NewsSchema, News);
-
+  });
+  return News;
+};
