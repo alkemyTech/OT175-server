@@ -16,11 +16,11 @@ const NewsSchema = {
     },
     name:{
         allowNull:false,
-        type: DataTypes.TEXT
+        type: DataTypes.STRING
     },
     content:{
         allowNull:false,
-        type: DataTypes.STRING
+        type: DataTypes.TEXT
     },
     image:{
         allowNull: false,
