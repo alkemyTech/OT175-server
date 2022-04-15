@@ -13,6 +13,7 @@ const getMembers = async(req, res) => {
         // Verify if exists members
         if ( members.length === 0 ) {
             return res.status(400).json({msg:'There is no registered members'});
+            
         }
 
         res.status(200).json({members});

@@ -40,7 +40,6 @@ router.put('/admin/:id', putMembersDeleted);
 /* DELETE members deleted. Only Admin can see */
 router.delete('/admin/:id', deleteMembersDeleted);
 
-
 /* GET member by ID */
 router.get('/:id', getMember);
 
