@@ -3,7 +3,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class News extends Model {
     static associate(models) {
-      this.belongsTo(models.Categories,{as: category})
+      this.belongsTo(models.Categories,{as: 'category'})
     }
   };News.init({
     id: {
@@ -31,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
 }, {
     sequelize,
     modelName: 'News',
-    freezeTableName: true
+    freezeTableName: true,
+    paranoid: true
   });
   return News;
 };
