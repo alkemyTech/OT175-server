@@ -8,7 +8,7 @@ require('dotenv').config()
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
-const newsRouter = require('./routes/news(borrar)')
+const newsRouter = require('./routes/news')
 
 const app = express();
 app.use(cors())
