@@ -56,7 +56,7 @@ router.put('/:id', [
     fieldsValidate
 ],updateMember);
 
-/* DELETEE member by ID */
+/* DELETE member by ID */
 router.delete('/:id', deleteMember);
 
 module.exports = router;
