@@ -3,10 +3,11 @@ var router = express.Router();
 const CategoryController= require('../controllers/category')
 
 /* GET categories listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
 
+router.get('/', CategoryController.list)
+// router.get('/:name', CategoryController.find)
 router.post('/create', CategoryController.create)
+router.put('/update', CategoryController.update)
+router.delete('/remove', CategoryController.remove)
 
 module.exports = router;
