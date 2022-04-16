@@ -6,7 +6,7 @@ router.route('/')
     .get(getAll)
     .post(create);
 
-router.route('/:articleId')
+router.route('/:id')
     .delete(deleteOne)
     .get(getOne)
     .patch(update)

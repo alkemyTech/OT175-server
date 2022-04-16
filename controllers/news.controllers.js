@@ -95,7 +95,7 @@ NewsCtrl.deleteOne = async(req, res) => {
     try{    
         const { id } = req.params;
 
-        News.delete({
+        News.destroy({
             where:{id: id}
         }).then(()=>{
             return res.status(200).send('article successfully deleted')
