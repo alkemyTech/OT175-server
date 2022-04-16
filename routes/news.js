@@ -12,7 +12,7 @@ router.route('/:articleId')
     .patch(update)
     .put(update);
 
-router.route('/:categoryId')
+router.route('/category/:categoryId')
     .get(getByCategory);
 
     module.exports = router;
