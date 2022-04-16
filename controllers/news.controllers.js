@@ -3,14 +3,11 @@ const { News }  = models;
 
 const NewsCtrl = {};
 
-NewsCtrl.create = async(req, res) => {
+NewsCtrl.create = async(req, res) => { //agregar middleware de validacion de datos
     try{
         const data = req.body;
         
         const article = await News.create(data);
-        if(!article){
-            return res.status(409).send('confict. look for any errors in the petition');
-        };
         return res.status(200).json(article)
 
     }catch(err){
