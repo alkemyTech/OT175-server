@@ -24,14 +24,18 @@ module.exports = (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     photo: DataTypes.STRING,
     password: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    roleId: DataTypes.INTEGER
+    roleId: {
+      type: DataTypes.INTEGER,
+      defaultValue: 2
+    }
   }, {
     sequelize,
     modelName: 'User',

@@ -23,12 +23,26 @@ async function tuVieja(){
   
   
 sequelize
-  .sync({ force: true })
+  .sync({force:true})
   .then(async () => {
     console.log("DB connected!");
     server.listen(port, async () => {
       console.log(`Server listen in port ${port}`)
-      await Role.create('admin')
+
+      await Role.create({
+        name: 'Admin',
+        description: 'Usuario administrador',
+        createdAt: new Date,
+        updatedAt: new Date
+      })
+
+      await Role.create({
+        name: 'Standard',
+        description: 'Usuario regular',
+        createdAt: new Date,
+        updatedAt: new Date
+      })
+      
       tuVieja()
     });
   })
