@@ -5,7 +5,7 @@ const Model = require('./models');
 const {User, Role} = Model
 
 // console.log(models.User)
-async function tuVieja(){
+async function crearUser(){
     try {
         await User.create({
           firstName: 'juan',
@@ -43,7 +43,7 @@ sequelize
         updatedAt: new Date
       })
       
-      tuVieja()
+      crearUser()
     });
   })
   .catch((e) => console.log("connection failed", e));
