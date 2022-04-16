@@ -7,16 +7,17 @@ const {
     getMember,
     updateMember,
     deleteMember,
-    getMembersDeleted,
-    putMembersDeleted,
-    deleteMembersDeleted,
-    postMember
+    postMember,
+    createForm
 } = require('../controllers/members');
 
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 
 /* GET members listing. */
 router.get('/', getMembers);
+
+/* Form create member */
+router.get('/create', createForm);
 
 /* POST members. */
 router.post('/', [
@@ -30,15 +31,6 @@ router.post('/', [
     check('description').trim().escape(),
     fieldsValidate
 ],postMember);
-
-/* GET members deleted. Only Admin can see */
-router.get('/admin/', getMembersDeleted);
-
-/* PUT members deleted. Only Admin can see */
-router.put('/admin/:id', putMembersDeleted);
-
-/* DELETE members deleted. Only Admin can see */
-router.delete('/admin/:id', deleteMembersDeleted);
 
 /* GET member by ID */
 router.get('/:id', getMember);
