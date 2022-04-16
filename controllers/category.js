@@ -33,8 +33,28 @@ class CategoryController {
       .catch(err => res.status(400).send(err.message));
   }
 
-  update(){}
-  remove(){}
- 
+  update(req, res) {
+    const { name, description, image, id } = req.body;
+    if (
+      name
+        ? typeString(name)
+        : true && description
+        ? typeString(description)
+        : true && image
+        ? validateUrl(image)
+        : true
+    ) {
+      return Category.update(
+        { name, description, image },
+        {
+          where: { id },
+        }
+      )
+        .then(category => res.status(201).send(category))
+        .catch(err => res.status(400).send(err.message));
+    } else res.status(200).send(resAllItems);
+  }
+
+  remove() {}
 }
 module.exports = new CategoryController();
