@@ -1,23 +1,24 @@
 const models = require("../models");
 const { Category } = models;
-const HttpStatusCodes = require('../common/httpCodes');
+const HttpStatusCodes = require("../common/httpCodes");
 
 const resAllItems =
   "add a name, a description of type string and an url for image";
 const updateOk = "successful update";
+const deleteOk = "successful delete";
 const resType = "add a valid data type";
 
 const validateUrl = url => {
-   const RegExp =
+  const RegExp =
     /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
   return RegExp.test(url);
 };
-const typeString = data => {  
+const typeString = data => {
   return typeof data === "string";
 };
 
 const typeNumber = data => {
-   return typeof data === "number";
+  return typeof data === "number";
 };
 
 const isString = data => {
@@ -38,7 +39,9 @@ class CategoryController {
         defaults: { name, description, image },
       })
         .then(category => res.status(HttpStatusCodes.CREATED).send(category))
-        .catch(err => res.status(HttpStatusCodes.BAD_REQUEST).send(err.message));
+        .catch(err =>
+          res.status(HttpStatusCodes.BAD_REQUEST).send(err.message)
+        );
     } else {
       res.status(HttpStatusCodes.BAD_REQUEST).send(resAllItems);
     }
@@ -64,10 +67,23 @@ class CategoryController {
         }
       )
         .then(category => res.status(HttpStatusCodes.OK).send(updateOk))
-        .catch(err => res.status(HttpStatusCodes.BAD_REQUEST).send(err.message));
+        .catch(err =>
+          res.status(HttpStatusCodes.BAD_REQUEST).send(err.message)
+        );
     } else res.status(HttpStatusCodes.BAD_REQUEST).send(resType);
   }
 
-  remove() {}
+  remove(req, res) {
+    const { id } = req.body;
+    if (isNumber(id)) {
+      return Category.destroy({
+        where: { id },
+      })
+        .then(category => res.status(HttpStatusCodes.OK).send(deleteOk))
+        .catch(err =>
+          res.status(HttpStatusCodes.BAD_REQUEST).send(err.message)
+        );
+    } else res.status(HttpStatusCodes.BAD_REQUEST).send(resType);
+  }
 }
 module.exports = new CategoryController();
