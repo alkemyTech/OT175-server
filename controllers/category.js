@@ -37,16 +37,16 @@ class CategoryController {
         where: { name },
         defaults: { name, description, image },
       })
-        .then(category => res.status(201).send(category))
-        .catch(err => res.status(400).send(err.message));
+        .then(category => res.status(HttpStatusCodes.CREATED).send(category))
+        .catch(err => res.status(HttpStatusCodes.BAD_REQUEST).send(err.message));
     } else {
-      res.status(200).send(resAllItems);
+      res.status(HttpStatusCodes.BAD_REQUEST).send(resAllItems);
     }
   }
   list(_, res) {
     return Category.findAll({})
-      .then(categories => res.status(201).send(categories))
-      .catch(err => res.status(400).send(err.message));
+      .then(categories => res.status(HttpStatusCodes.OK).send(categories))
+      .catch(err => res.status(HttpStatusCodes.BAD_REQUEST).send(err.message));
   }
 
   update(req, res) {
@@ -63,9 +63,9 @@ class CategoryController {
           where: { id },
         }
       )
-        .then(category => res.status(201).send(updateOk))
-        .catch(err => res.status(400).send(err.message));
-    } else res.status(200).send(resType);
+        .then(category => res.status(HttpStatusCodes.OK).send(updateOk))
+        .catch(err => res.status(HttpStatusCodes.BAD_REQUEST).send(err.message));
+    } else res.status(HttpStatusCodes.BAD_REQUEST).send(resType);
   }
 
   remove() {}
