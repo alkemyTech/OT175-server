@@ -4,9 +4,9 @@ const models = require('../models');
 const { Users } = models
 
 
-async function authMiddleware (authorizedRoles) {
+function authMiddleware (authorizedRoles) {
 //una vez se le pasen los roles permitidos retornará la funcion del middleware en sí
-    return (req, res, next)=>{
+    return async(req, res, next)=>{
         const token = req.header;
         const payload = jwt.verify(token, process.env.JWT_SECRET);//variable de .env abierta a cambios de
         if(payload.id && payload.roleId)                          //nommbre según decida el encargado de los jwt
