@@ -1,119 +1,101 @@
 const { response } = require("express");
-const  models  = require("../models");
-const {Organization} = models;
 
- class OrganizationController {
-    
-    constructor(){
-        this.getOrganizations
-        this.getOrganization;
-        this.createOrganization;
-        this.updateOrganization;
-        this.deleteOrganization;
+const HttpStatus = require("../middlewares/handleError");
+const models = require("../models");
+const { Organization } = models;
+
+class OrganizationController {
+  constructor() {}
+
+  async getOrganizations(req, res) {
+    let organizations;
+    try {
+      organizations = await Organization.findAll();
+    } catch (error) {
+      return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
+    }
+    return HttpStatus.HTTP_OK(res, organizations);
+  }
+
+  async getOrganization(req, res = response) {
+    const { id } = req.params;
+    let organization;
+    try {
+      organization = await Organization.findOne({
+        where: { id: id },
+        attributes: ["name", "phone", "email", "address"],
+      });
+
+      if (!organization) {
+        return HttpStatus.HTTP_BAD_REQUEST(res);
+      }
+    } catch (error) {
+      return HttpStatus.HTTP_ERROR_INTERNAL(error);
+    }
+    return HttpStatus.HTTP_OK(res, organization);
+  }
+
+  async updateOrganization(req, res = response) {
+    const { id } = req.params;
+    const body = req.body;
+
+    let organization;
+    let organizationResponse;
+    try {
+      organization = await Organization.update(body, {
+        where: { id: id },
+      });
+
+      organizationResponse = await Organization.findByPk(id);
+
+      if (!organizationResponse) {
+        return HttpStatus.HTTP_BAD_REQUEST(res);
+      }
+    } catch (error) {
+      return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
+    }
+    return HttpStatus.HTTP_OK(res, organizationResponse);
+  }
+
+  async createOrganization(req, res = response) {
+
+    const { createdAt, updatedAt, ...body } = req.body;
+
+    const data = {
+      ...body,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    let organization;
+    try {
+      organization = await Organization.create(data);
+    } catch (error) {
+      return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
+    }
+    return HttpStatus.HTTP_CREATE(res, organization);
+  }
+
+  async deleteOrganization(req, res = response) {
+    const { id } = req.params;
+
+    let organizationResponse;
+    try {
+      organizationResponse = await Organization.findByPk(id);
+
+      if (!organizationResponse) {
+        return HttpStatus.HTTP_BAD_REQUEST(res);
+      }
+      const organization = await Organization.destroy({
+        where: {
+          id: id,
+        },
+      });
+    } catch (error) {
+      return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
     }
 
-    async getOrganizations(req, res){
-      try {
-        const organizations = await Organization.findAll();
-        return res.status(200).json(organizations);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    
-    
-    async getOrganization (req, res = response){
-      const { id } = req.params;
-    
-      try {
-        const organization = await Organization.findOne({
-          where: { id: id },
-        });
-    
-        if (!organization) {
-          return res.status(404).json({
-            message: "unregistered organization",
-          });
-        }
-        return res.status(200).json(organization);
-      } catch (error) {
-        console.log(error);
-        return res.status(500).json(error);
-      }
-    };
-    
-    async updateOrganization(req, res = response) {
-    
-        const {id} = req.params;
-        const body = req.body;
-    
-        try {
-            const organization = await Organization.update(body, {
-                where: {id: id}
-            });
-    
-            const organizationResponse = await Organization.findByPk(id);
-    
-            if(!organizationResponse){
-              return res.status(404).json({message: 'unregistered organization'});
-            }
-            return res.status(200).json({
-                message: 'Organization updated',
-                organizationResponse
-            });
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json(error);
-        }
-    }
-    
-    async createOrganization (req, res = response){
-    
-        const {createdAt, updatedAt, ...body} = req.body;
-    
-        const data = {
-            ...body,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        }
-        try {
-            const organization = await Organization.create(data);
-            return res.status(201).json({
-                message: 'Organization created',
-                organization
-            });
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json(error);
-        }
-    }
-    
-    async deleteOrganization(req, res = response){
-    
-        const {id} = req.params;
-    
-        try {
-    
-            const organization = await Organization.destroy({
-                where: {
-                    id: id,
-                }
-            });
-            const organizationResponse = await Organization.findByPk(id);
-    
-            if(!organizationResponse){
-                return res.status(404).json({message: 'unregistered organization'});
-            }
-            
-            return res.status(200).json({
-                message: 'Organization deleted',
-                organizationResponse
-            });
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json(error);
-        }
-    }
+    return HttpStatus.HTTP_OK(res, organizationResponse);
+  }
 }
 
 module.exports = OrganizationController;
