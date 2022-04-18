@@ -26,25 +26,25 @@ router.get('/create', createForm);
 router.post('/', [
     check('name', 'name can´t be empty').not().isEmpty().trim().escape(),
     check('name', 'name must be string').isString().trim().escape(),
-    check('facebookUrl').trim().escape(),
-    check('instagramUrl').trim().escape(),
-    check('linkedinUrl').trim().escape(),
-    check('image', 'image can´t be empty').not().isEmpty().trim().escape(),
-    check('image', 'image must be string').isString().trim().escape(),
+    check('facebookUrl').trim(),
+    check('instagramUrl').trim(),
+    check('linkedinUrl').trim(),
+    check('image', 'image can´t be empty').not().isEmpty().trim(),
+    check('image', 'image must be string').isString().trim(),
     check('description').trim().escape(),
     fieldsValidate
 ],postMember);
 
 
-/* PUT member by ID */
+/* Update member by ID */
 router.post('/update/:id', [
     check('name', 'name can´t be empty').not().isEmpty().trim().escape(),
     check('name', 'name must be string').isString().trim().escape(),
-    check('facebookUrl').trim().escape(),
-    check('instagramUrl').trim().escape(),
-    check('linkedinUrl').trim().escape(),
-    check('image', 'image can´t be empty').not().isEmpty().trim().escape(),
-    check('image', 'image must be string').isString().trim().escape(),
+    check('facebookUrl').trim(),
+    check('instagramUrl').trim(),
+    check('linkedinUrl').trim(),
+    check('image', 'image can´t be empty').not().isEmpty().trim(),
+    check('image', 'image must be string').isString().trim(),
     check('description').trim().escape(),
     fieldsValidate
 ],updateMember);
