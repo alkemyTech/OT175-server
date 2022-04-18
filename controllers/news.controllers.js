@@ -1,9 +1,12 @@
 const models = require('./../models');
 const { News }  = models;
 
-const NewsCtrl = {};
+class NewsCtrl {
+    constructor(){
 
-NewsCtrl.create = async(req, res) => { //agregar middleware de validacion de datos
+    }
+
+async create(req, res) { //agregar middleware de validacion de datos
     try{
         const data = req.body;
         
@@ -15,7 +18,7 @@ NewsCtrl.create = async(req, res) => { //agregar middleware de validacion de dat
         return res.status(500).send('internal server error. could not create');
     };
 }
-NewsCtrl.getAll = async(req, res) => {
+async getAll(req, res) {
     try{
         const articles = await News.findAll({
             where: {deletedAt: 0},
@@ -32,7 +35,7 @@ NewsCtrl.getAll = async(req, res) => {
     };
 
 };
-NewsCtrl.getOne = async(req, res) => {
+async getOne(req, res) {
     try{    
         const { id } = req.params;
 
@@ -52,7 +55,7 @@ NewsCtrl.getOne = async(req, res) => {
         return res.status(500).send('internal server error. could not get News');
     };   
 };
-NewsCtrl.getByCategory = async(req, res) => {
+async getByCategory(req, res) {
     try{    
         const { id } = req.params;
 
@@ -71,7 +74,7 @@ NewsCtrl.getByCategory = async(req, res) => {
         return res.status(500).send('internal server error. could not get News');
     }   
 };
-NewsCtrl.update = async(req, res) => {
+async update(req, res) {
     try{    
         const { id } = req.params;
         const data = req.body;
@@ -91,7 +94,7 @@ NewsCtrl.update = async(req, res) => {
         return res.status(500).send('internal server error. could not get News');
     }
 };
-NewsCtrl.deleteOne = async(req, res) => {
+async deleteOne(req, res) {
     try{    
         const { id } = req.params;
 
@@ -108,6 +111,6 @@ NewsCtrl.deleteOne = async(req, res) => {
         console.error(err)
         return res.status(500).send('internal server error. could not get News');
     }
-};
+};}
 
 module.exports = NewsCtrl

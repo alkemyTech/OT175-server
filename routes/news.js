@@ -1,18 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const {getAll, getOne, deleteOne, update, getByCategory, create} = require('../controllers/news.controllers')
+const NewsCtrl = require('../controllers/news.controllers');
+
+const controller = new NewsCtrl()
 
 router.route('/')
-    .get(getAll)
-    .post(create);
+    con.get(controller.getAll)
+    .post(controller.create);
 
 router.route('/:id')
-    .delete(deleteOne)
-    .get(getOne)
-    .patch(update)
-    .put(update);
+    .delete(controller.deleteOne)
+    .get(controller.getOne)
+    .patch(controller.update)
+    .put(controller.update);
 
 router.route('/category/:categoryId')
-    .get(getByCategory);
+    .get(controller.getByCategory);
 
     module.exports = router;
