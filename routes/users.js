@@ -1,17 +1,13 @@
 const router = require('express').Router();
-const usersControllers = require('../controllers/userControllers')
+const UserController = require('../controllers/userControllers')
 
 /* GET users listing. */
-router.get('/', usersControllers.getUsers);
+router.get('/', UserController.getUsers);
 
-router.get('/:id', usersControllers.getUserById);
+router.get('/:id', UserController.getUserById);
 
-// router.post('/login', usersControllers.logIn);
+router.put('/update/:id', UserController.updateUser);
 
-// router.post('/signin', usersControllers.signIn);
-
-router.put('/update/:id', usersControllers.updateUser);
-
-router.delete('/delete/:id', usersControllers.deleteUser);
+router.delete('/delete/:id', UserController.deleteUser);
 
 module.exports = router;
