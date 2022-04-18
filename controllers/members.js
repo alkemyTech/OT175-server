@@ -24,7 +24,7 @@ const getMembers = async(req, res) => {
 
 const getMember = async(req, res) => {
     const { id } = req.params;
-    const member = await Member.findOne({
+    const results = await Member.findOne({
             where: {
                 id,
                 'deleted': 0
@@ -33,12 +33,12 @@ const getMember = async(req, res) => {
         });
 
         // Verify if exists members
-        if ( !member ) {
+        if ( !results ) {
             return res.status(400).json({msg:'There is no registered member'});
         }
         
         try {
-            res.status(200).json({member});
+            res.render('members/edit',{ member: results.dataValues });
     } catch (err) {
         console.log(err);
         res.status(501).json({msg:'There was a problem getting the members, check with the administrator'})
@@ -66,8 +66,7 @@ const updateMember = async(req, res) => {
                 image,
                 description
             });
-
-            res.status(200).json({msg: 'Member updated'});
+            res.redirect('/members');
     } catch (err) {
         console.log(err);
         res.status(501).json({msg:'There was a problem getting the members, check with the administrator'})
@@ -90,7 +89,7 @@ const deleteMember = async(req, res) => {
              'deleted': 1
          });
 
-         res.status(200).json({msg: 'Member deleted'});
+         res.redirect('/members');
     } catch (err) {
         console.log(err);
         res.status(501).json({msg:'There was a problem getting the members, check with the administrator'})
@@ -126,5 +125,5 @@ module.exports = {
     updateMember,
     deleteMember,
     postMember,
-    createForm
+    createForm,
 }

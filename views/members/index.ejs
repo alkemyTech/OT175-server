@@ -38,8 +38,8 @@
                         <td><img src="<%= member.image %>" width="120" height="110"></td>
                         <td><%= member.description %></td>
                         <td>
-                            <a href="members/edit" class="btn btn-outline-info">Edit</a>
-                            <a href="members/delete" class="btn btn-outline-danger">Delete</a>
+                            <a href="members/edit/<%= member.id %>" class="btn btn-outline-info">Edit</a>
+                            <a href="members/delete/<%= member.id %>" class="btn btn-outline-danger">Delete</a>
 
                         </td>
                     </tr>

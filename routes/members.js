@@ -8,13 +8,16 @@ const {
     updateMember,
     deleteMember,
     postMember,
-    createForm
+    createForm,
 } = require('../controllers/members');
 
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 
 /* GET members listing. */
 router.get('/', getMembers);
+
+/* Form edit member */
+router.get('/edit/:id', getMember);
 
 /* Form create member */
 router.get('/create', createForm);
@@ -32,11 +35,9 @@ router.post('/', [
     fieldsValidate
 ],postMember);
 
-/* GET member by ID */
-router.get('/:id', getMember);
 
 /* PUT member by ID */
-router.put('/:id', [
+router.post('/update/:id', [
     check('name', 'name can´t be empty').not().isEmpty().trim().escape(),
     check('name', 'name must be string').isString().trim().escape(),
     check('facebookUrl').trim().escape(),
@@ -49,6 +50,6 @@ router.put('/:id', [
 ],updateMember);
 
 /* DELETEE member by ID */
-router.delete('/:id', deleteMember);
+router.get('/delete/:id', deleteMember);
 
 module.exports = router;
