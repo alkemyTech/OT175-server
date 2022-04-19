@@ -1,5 +1,6 @@
 const models = require('../models');
 const { Member } = models;
+const { OK, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('http-status-codes');
 
 const getMembers = async(req, res) => {
     const members = await Member.findAll({
@@ -11,14 +12,14 @@ const getMembers = async(req, res) => {
 
         // Verify if exists members
         if ( !members.length ) {
-            return res.status(400).json({msg:'There is no registered members'});
+            return res.status(NOT_FOUND).json({msg:'There is no registered members'});
         }
         
         try {
-            res.status(200).json(members);
+            res.status(OK).json(members);
     } catch (err) {
         console.log(err);
-        res.status(501).json({msg:'There was a problem getting the members, check with the administrator'})
+        res.status(INTERNAL_SERVER_ERROR).json({msg:'There was a problem getting the members, check with the administrator'})
     }
 }
 
@@ -34,14 +35,14 @@ const getMember = async(req, res) => {
 
         // Verify if exists members
         if ( !member ) {
-            return res.status(400).json({msg:'There is no registered member'});
+            return res.status(NOT_FOUND).json({msg:'There is no registered member'});
         }
         
         try {
-            res.status(200).json({member});
+            res.status(OK).json({member});
     } catch (err) {
         console.log(err);
-        res.status(501).json({msg:'There was a problem getting the members, check with the administrator'})
+        res.status(INTERNAL_SERVER_ERROR).json({msg:'There was a problem getting the members, check with the administrator'})
     }
 }
 
@@ -53,7 +54,7 @@ const updateMember = async(req, res) => {
         
         // Verify if exists members
         if ( !member ) {
-            return res.status(400).json({msg:'There is no registered member'});
+            return res.status(NOT_FOUND).json({msg:'There is no registered member'});
         }
         
         try {
@@ -67,10 +68,10 @@ const updateMember = async(req, res) => {
                 description
             });
 
-            res.status(200).json({msg: 'Member updated'});
+            res.status(OK).json({msg: 'Member updated'});
     } catch (err) {
         console.log(err);
-        res.status(501).json({msg:'There was a problem getting the members, check with the administrator'})
+        res.status(INTERNAL_SERVER_ERROR).json({msg:'There was a problem getting the members, check with the administrator'})
     }
 }
 
@@ -81,7 +82,7 @@ const deleteMember = async(req, res) => {
     
     // Verify if exists members
     if ( !member ) {
-        return res.status(400).json({msg:'There is no registered member'});
+        return res.status(NOT_FOUND).json({msg:'There is no registered member'});
     }
     
     try {
@@ -90,10 +91,10 @@ const deleteMember = async(req, res) => {
              'deleted': 1
          });
 
-         res.status(200).json({msg: 'Member deleted'});
+         res.status(OK).json({msg: 'Member deleted'});
     } catch (err) {
         console.log(err);
-        res.status(501).json({msg:'There was a problem getting the members, check with the administrator'})
+        res.status(INTERNAL_SERVER_ERROR).json({msg:'There was a problem getting the members, check with the administrator'})
     }
 }
 
@@ -109,10 +110,10 @@ const postMember = async(req, res) => {
         });
         
         try {
-            res.status(200).json({msg:'Member created'});
+            res.status(OK).json({msg:'Member created'});
     } catch (err) {
         console.log(err);
-        res.status(501).json({msg:'There was a problem getting the members, check with the administrator'})
+        res.status(INTERNAL_SERVER_ERROR).json({msg:'There was a problem getting the members, check with the administrator'})
     }
 }
 
