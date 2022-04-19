@@ -6,7 +6,7 @@ async function selfAuth(req, res, next){
 
     const token = req.header;
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    if(payload.id==id){
+    if(payload.id===id){
         next()
     }else{
         res.status(501).send('conflict ocurred')
