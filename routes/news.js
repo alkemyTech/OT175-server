@@ -5,7 +5,7 @@ const NewsCtrl = require('../controllers/news.controllers');
 const controller = new NewsCtrl()
 
 router.route('/')
-    con.get(controller.getAll)
+    .get(controller.getAll)
     .post(controller.create);
 
 router.route('/:id')

@@ -6,7 +6,7 @@ class NewsCtrl {
 
     }
 
-async create(req, res) { //agregar middleware de validacion de datos
+async create(req, res) { 
     try{
         const data = req.body;
         
