@@ -2,10 +2,6 @@ const router = require('express').Router();
 const AuthControllers = require('../controllers/authControllers')
 const { body, validationResult } = require('express-validator'); 
 
-// console.log(authControllers.validation)
-
-// router.post('/login', usersControllers.logIn);
-
 router.post(
     '/register', 
     body('firstName', 'Please enter a valid First Name').isAlpha(), 
