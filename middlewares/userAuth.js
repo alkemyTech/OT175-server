@@ -1,17 +1,15 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config();  // despues de que se agregue el secret a config.js esto hay que cambiarlo
+require('dotenv').config();
 const models = require('../models');
 const { Users } = models
 
 
-function authMiddleware (authorizedRoles) {
-//una vez se le pasen los roles permitidos retornará la funcion del middleware en sí
+function restrictUnauthorizedRoles (authorizedRoles) {
     return async(req, res, next)=>{
         const token = req.header;
-        const payload = jwt.verify(token, process.env.JWT_SECRET);//variable de .env abierta a cambios de
-        if(payload.id && payload.roleId)                          //nommbre según decida el encargado de los jwt
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        if(payload.id && payload.roleId)
         {
-            //se busaca que el Usuario exista y que su rol coincida
             const targetUser = await Users.findOne({
                 where:{
                     id: payload.user,
@@ -19,7 +17,6 @@ function authMiddleware (authorizedRoles) {
                 }
             });
             if (targetUser && authorizedRoles.includes(targetUser.roleId)){
-                //si cumple todos los campos, se continúa 
                 next();
             }else if(!targetUser){
                 res.status(401).send('invalid credentials')
@@ -33,4 +30,4 @@ function authMiddleware (authorizedRoles) {
     };
 };
 
-module.exports = authMiddleware
+module.exports = restrictUnauthorizedRoles
