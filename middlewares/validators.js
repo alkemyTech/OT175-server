@@ -1,11 +1,13 @@
-const { validationResult, check } = require('express-validator');
+const { check } = require('express-validator');
+const { validateFields } = require('../common/validateFields');
 
    exports.validateOrganization = [ 
             check('name', 'The name field cannot be empty')
             .not()
             .isEmpty()
             .bail(),
-            check('image', 'The image field cannot be empty')
+            check('image', 'The image field is incorrect or empty')
+            .isURL({require_protocol: true})
             .not()
             .isEmpty()
             .bail(),
@@ -18,11 +20,6 @@ const { validationResult, check } = require('express-validator');
             .not()
             .isEmpty()
             .bail(),
-            (req, res, next) => {
-                const errors = validationResult(req);
-                if (!errors.isEmpty())
-                  return res.status(422).json({errors: errors.array()});
-                next();
-              }
+            validateFields
    ]
      
