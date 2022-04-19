@@ -11,11 +11,8 @@ const usersRouter = require('./routes/users');
 const organizationsRouter = require('./routes/organizations');
 const membersRouter = require('./routes/members');
 const testimonialsRouter = require('./routes/testimonials');
-<<<<<<< HEAD
 const categoriesRouter = require('./routes/category');
-=======
 const newsRouter = require('./routes/news')
->>>>>>> fea0791ffe07eb37d39ccc6e59127d464a93c279
 
 const app = express();
 app.use(cors());
