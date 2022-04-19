@@ -1,15 +1,16 @@
+const User = require('../controllers/userController');
 const ADMIN_ROLE_ID = 1;
 
 module.exports =  function(req,res,next){
-        if(req.body.roleId){
+
+        if(typeof req.body.roleId !== "undefined"){
             if(req.body.roleId !== ADMIN_ROLE_ID){
-                res.status(401).json({error: "Acces denied"});
-                return;
+                return res.status(401).json({error: "Acces denied"});
             }
         }
         else{
-            res.status(401).json({error: "Invalid request"});
-            return;
+            return res.status(401).json({error: "Invalid request"});
         }
+
         next();
 }
