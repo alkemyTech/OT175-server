@@ -21,7 +21,7 @@ async create(req, res) {
 async getAll(req, res) {
     try{
         const articles = await News.findAll({
-            where: {deletedAt: 0},
+            where: {deletedAt: null},
             include: 'category'
         });
         if(articles.length===0){
@@ -60,7 +60,7 @@ async getByCategory(req, res) {
         const { id } = req.params;
 
         const articles = await News.findAll({
-            where: {categoryId: id}
+            where: {category_id: id}
         });
 
         if(!articles){
