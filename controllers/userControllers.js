@@ -4,13 +4,6 @@ const { User } = Model
 
 class UserController {
 
-    constructor(){
-        this.getUsers,
-        this.getUserById,
-        this.updateUser,
-        this.deleteUser
-    }
-
     async getUsers(req, res, next) {
         try {
             const query = await User.findAll()
