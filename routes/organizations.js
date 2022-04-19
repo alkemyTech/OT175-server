@@ -9,10 +9,9 @@ const router = Router();
 
 router.get('/', Organization.getOrganizations);
 
-//Get organization by ID
- router.get('/public/:id', Organization.getOrganization);
+router.get('/public/:id', Organization.getOrganization);
 
- router.post('/', validateOrganization , Organization.createOrganization);
+router.post('/', validateOrganization , Organization.createOrganization);
 
 router.put('/:id', validateOrganization , Organization.updateOrganization);
 

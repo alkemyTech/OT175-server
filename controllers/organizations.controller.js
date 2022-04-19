@@ -1,6 +1,6 @@
 const { response } = require("express");
 
-const HttpStatus = require("../middlewares/handleError");
+const HttpStatus = require("../common/handleError");
 const models = require("../models");
 const { Organization } = models;
 
@@ -93,7 +93,6 @@ class OrganizationController {
     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
     }
-
     return HttpStatus.HTTP_OK(res, organizationResponse);
   }
 }
