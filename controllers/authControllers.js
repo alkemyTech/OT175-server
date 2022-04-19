@@ -5,11 +5,6 @@ const { User } = Model
 
 class AuthControllers {
 
-    constructor(){
-        this.signin,
-        this.logIn
-    }
-
     async signin(req, res, next) {
         try {
             const errors = validationResult(req);
@@ -22,7 +17,6 @@ class AuthControllers {
                 }
             })
             
-            console.log(req.body)
             if(admin){
                 await User.create({
                     firstName: req.body.firstName,
@@ -51,16 +45,6 @@ class AuthControllers {
             next(error)
         }
     }
-
-    
-    // async logIn(req, res, next) {
-    //     try {
-            
-    //     } catch (error) {
-    //         next(error)
-    //     }
-    // }
-
 }
 
 module.exports = new AuthControllers()
