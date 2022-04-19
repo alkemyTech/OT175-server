@@ -33,8 +33,8 @@ module.exports = {
         type: Sequelize.DATE
       },
       deletedAt: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0
+        type: Sequelize.DATE,
+        allowNull: false
       }
     });
   },
