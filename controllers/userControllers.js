@@ -25,18 +25,17 @@ class UserController {
         }
     }
 
-    async getUserByMail(req, res, next) {
+    async findUserByMail(email) {
         try {
-            console.log(req.params)
             const userQuery = await User.findOne({
                 where: {
-                    email: req.params.mail
+                    email
                 }
             })
-            userQuery ? res.json(userQuery) : res.json({ msge: 'The query got no results. Im sory'})
-            // res.send(req.params)
+            if(userQuery) return userQuery
+            else return new Error('No element found')
         } catch (error) {
-            next(error)
+            console.log(error)
         }
     }
 
