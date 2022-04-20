@@ -6,7 +6,8 @@ var roleController = require("../controllers/roleController");
 
 /* GET users listing. */
 router.get("/", async function (req, res, next) {
-  res.json(await roleController.getRoleById(1));
+  //res.json(await roleController.getRoleById(req.body.parametro));
+  res.json(await roleController.isAdmin(req.body.parametro));
 });
 
 module.exports = router;
