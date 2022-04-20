@@ -1,12 +1,24 @@
-const roleModel = require("../models/role");
+const models = require("../models");
+const { Role } = models;
 
 class RoleController {
   postRole(name, description) {
-    console.log("class rolecontroller, method postRole");
+    try {
+      await Role.create({ name: name, description: description });
 
-    roleModel.create({ name: "a", description: "b" });
+      return { status: "ok" };
+    } catch (error) {
+      return { error: error };
+    }
+  }
 
-    return "ok";
+  async isAdmin(roleId) {
+    try {
+      let data = await Role.findByPk(roleId);
+      return data.dataValues.name === "Admin";
+    } catch (error) {
+      return { error: error };
+    }
   }
 }
 
