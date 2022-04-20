@@ -39,7 +39,7 @@ class RoleController {
       let data = await Role.findByPk(roleId);
       return data == null ? false : data.dataValues.name == "Admin";
     } catch (error) {
-      return null;
+      throw error;
     }
   }
 }
