@@ -1,3 +1,7 @@
 node_modules
 .env
+<<<<<<< HEAD
 requests.http
+=======
+requests.http
+>>>>>>> 3269296180af8fb04c56680d413c2b048e610f56
