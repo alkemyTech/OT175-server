@@ -1,16 +1,22 @@
-const User = require('../controllers/userController');
-const ADMIN_ROLE_ID = 1;
+const jwt = require('jsonwebtoken');
+const Role = require('../controllers/roleController');
 
 module.exports =  function(req,res,next){
-
-        if(typeof req.body.roleId !== "undefined"){
-            if(req.body.roleId !== ADMIN_ROLE_ID){
+    const token = req.header;
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    if(payload.id && payload.roleId){
+        try{
+            const IS_ADMIN = Role.isAdmin(payload.roleId);
+            if (!IS_ADMIN){
                 return res.status(401).json({error: "Acces denied"});
             }
         }
-        else{
-            return res.status(401).json({error: "Invalid request"});
+        catch (err){
+            return res.json(err);
         }
+    }else{
+        res.status(401).send('invalid credentials')
+    };
 
-        next();
+    next();
 }

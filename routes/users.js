@@ -1,10 +1,13 @@
-var express = require('express');
-var router = express.Router();
-const adm = require('../middlewares/adminAuthentication')
+const router = require('express').Router();
+const UserController = require('../controllers/userControllers')
 
 /* GET users listing. */
-router.get('/',adm, function(req, res, next) {
-  res.send('respond with a resource');
-});
+router.get('/', UserController.getUsers);
+
+router.get('/:id', UserController.getUserById);
+
+router.put('/update/:id', UserController.updateUser);
+
+router.delete('/delete/:id', UserController.deleteUser);
 
 module.exports = router;
