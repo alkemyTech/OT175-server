@@ -37,9 +37,9 @@ class RoleController {
   async isAdmin(roleId) {
     try {
       let data = await Role.findByPk(roleId);
-      return data == null ? null : data.dataValues.name === "Admin";
+      return data;
     } catch (error) {
-      return { error: error };
+      return null;
     }
   }
 }
