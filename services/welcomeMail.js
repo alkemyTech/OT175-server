@@ -1,10 +1,10 @@
 const sgMail = require('@sendgrid/mail');
 const ejs = require('ejs');
 const path = require('path');
-
+const emailTitle = "Welcome";
 module.exports = class welcomeMail{
 
-    static async sendWelcomeMail(email,emailTitle,title,text,contact){
+    static async sendWelcomeMail(email,title,text,contact){
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
         let emailTemplate;
