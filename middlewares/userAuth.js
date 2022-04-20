@@ -6,14 +6,15 @@ const { Users } = models
 
 function restrictUnauthorizedRoles (authorizedRoles) {
     return async(req, res, next)=>{
-        const token = req.header;
+        const token = req.headers.authorization.slice(7);
         const payload = jwt.verify(token, process.env.JWT_SECRET);
-        if(payload.id && payload.roleId)
+        let targetUser = {}
+        if(payload.userId && payload.roleId)
         {
-            const targetUser = await Users.findOne({
+            targetUser = await Users.findOne({
                 where:{
-                    id: payload.user,
-                    roleId: payload.role
+                    id: payload.userId,
+                    roleId: payload.roleId
                 }
             });
             if (targetUser && authorizedRoles.includes(targetUser.roleId)){
