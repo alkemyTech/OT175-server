@@ -11,7 +11,7 @@ function restrictUnauthorizedRoles (authorizedRoles) {
         let targetUser = {}
         if(payload.userId && payload.roleId)
         {
-            targetUser = await Users.findOne({
+            targetUser = await User.findOne({
                 where:{
                     id: payload.userId,
                     roleId: payload.roleId
