@@ -1,28 +1,24 @@
-const sgMail = require('@sendgrid/mail');
-const ejs = require('ejs');
-const path = require('path');
-require('dotenv').config();
+const sgMail = require("@sendgrid/mail");
+require("dotenv").config();
 
-class SendEmail{
+class SendEmail {
+  static async sendEmailTo(emailTo, emailSubject, emailTemplate) {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-    static async sendEmailTo(emailTo,emailSubject,emailTemplate){
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const msg = {
+      to: emailTo,
+      from: process.env.FROM_EMAIL,
+      subject: emailSubject,
+      html: emailTemplate,
+    };
 
-          const msg = {
-            to: emailTo,
-            from: process.env.FROM_EMAIL,
-            subject: emailSubject,
-            html: emailTemplate
-        };
-    
-        try {
-            let res = await sgMail.send(msg);
-            return(res);
-        } 
-        catch (err) {
-            return err;
-        }
+    try {
+      let res = await sgMail.send(msg);
+      return res;
+    } catch (err) {
+      return err;
     }
+  }
 }
 
-module.exports = SendEmail()
+module.exports = SendEmail;
