@@ -3,26 +3,12 @@ const ejs = require('ejs');
 const path = require('path');
 require('dotenv').config();
 
-module.exports =class sendEmail{
+class SendEmail{
 
-    static async sendEmailTo(emailTo,emailSubject,title,text,contact, nameFile){
+    static async sendEmailTo(emailTo,emailSubject,emailTemplate){
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-        let emailTemplate;
-        
-        try{
-            emailTemplate = await ejs.renderFile(path.join(__dirname, `../views/${nameFile}`), 
-            {
-                title: title,
-                text: text,
-                contact: contact
-            })
-        }
-        catch (err){
-            return err;
-        }
-      
-        const msg = {
+          const msg = {
             to: emailTo,
             from: process.env.FROM_EMAIL,
             subject: emailSubject,
@@ -38,3 +24,5 @@ module.exports =class sendEmail{
         }
     }
 }
+
+module.exports = SendEmail()
