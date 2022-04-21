@@ -5,13 +5,13 @@ require('dotenv').config();
 
 class sendEmail{
 
-    static async sendEmailTo(emailTo,emailSubject,title,text,contact, addressFolder){
+    static async sendEmailTo(emailTo,emailSubject,title,text,contact, nameFile){
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
         let emailTemplate;
         
         try{
-            emailTemplate = await ejs.renderFile(path.join(__dirname, `../views/${addressFolder}`), 
+            emailTemplate = await ejs.renderFile(path.join(__dirname, `../views/${nameFile}`), 
             {
                 title: title,
                 text: text,
