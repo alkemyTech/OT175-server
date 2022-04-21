@@ -53,7 +53,8 @@ class CategoryController {
   }
 
   update(req, res) {
-    const { name, description, image, id } = req.body;
+    const{id}= req.params
+    const { name, description, image } = req.body;
     if (
       isString(name) &&
       isString(description) &&
