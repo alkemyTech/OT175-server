@@ -34,6 +34,34 @@ class RoleController {
     }
   }
 
+  async updateRole(roleId, name, description) {
+    try {
+      let data = await Role.update(
+        {
+          name: name,
+          description: description,
+        },
+        {
+          where: {
+            id: roleId,
+          },
+        }
+      );
+      return { "Registros editados: ": data };
+    } catch (error) {
+      return { error: error };
+    }
+  }
+
+  async deleteRole(roleId) {
+    try {
+      let data = await Role.destroy({ where: { id: roleId } });
+      return { "Registros eliminados: ": data };
+    } catch (error) {
+      return { error: error };
+    }
+  }
+
   async isAdmin(roleId) {
     try {
       let data = await Role.findByPk(roleId);
