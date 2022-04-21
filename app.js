@@ -9,10 +9,6 @@ require("dotenv").config();
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 
-//Agregado provisorio por victor para hacer pruebas, no debe enviarse al PR
-const rolesRouter = require("./routes/roles");
-//fin de agregado provisorio
-
 const app = express();
 app.use(cors());
 
@@ -28,10 +24,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-
-//Agregado provisorio por victor para hacer pruebas, no debe enviarse al PR
-app.use("/roles", rolesRouter);
-//fin de agregado provisorio
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
