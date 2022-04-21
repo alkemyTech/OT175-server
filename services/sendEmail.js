@@ -3,7 +3,7 @@ const ejs = require('ejs');
 const path = require('path');
 require('dotenv').config();
 
-class sendEmail{
+module.exports =class sendEmail{
 
     static async sendEmailTo(emailTo,emailSubject,title,text,contact, nameFile){
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
