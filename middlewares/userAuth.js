@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const models = require('../models');
-const { Users } = models
+const { User } = models
 
 
 function restrictUnauthorizedRoles (authorizedRoles) {
