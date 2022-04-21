@@ -3,3 +3,4 @@ node_modules
 roles.js
 app_borrame.js
 .gitignore
+requests.http
