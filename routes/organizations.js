@@ -13,8 +13,9 @@ router.get('/', Organization.getOrganizations);
 router.get('/public/:id', Organization.getOrganization);
 
 router.post('/public',
-restrictUnauthorizedRoles([1]),
- validateOrganization , Organization.createOrganization);
+    restrictUnauthorizedRoles([1]),
+    validateOrganization, 
+    Organization.createOrganization);
 
 router.post('/', validateOrganization , Organization.createOrganization);
 
