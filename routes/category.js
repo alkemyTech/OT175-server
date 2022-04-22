@@ -5,6 +5,7 @@ const CategoryController= require('../controllers/category')
 /* GET categories listing. */
 
 router.get('/', CategoryController.list)
+router.get('/:id', CategoryController.findCategory);
 // router.get('/:name', CategoryController.find)
 router.post('/create', CategoryController.create)
 router.put('/update', CategoryController.update)

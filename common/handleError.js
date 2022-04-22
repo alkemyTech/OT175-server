@@ -29,7 +29,7 @@ class HttpStatus {
   HTTP_NOT_FOUND(res) {
     const status_code = 404;
     res.status(status_code);
-    res.json({ message: "Not Found, unregistered organization" });
+    res.json({ message: "Not Found, unregistered ID" });
   }
 }
 
