@@ -10,7 +10,7 @@ router.route('/')
 
 router.route('/:id')
     .delete(controller.deleteOne)
-    .get(controller.getOne)
+    .get(controller.getANews)
     .patch(controller.update)
     .put(controller.update);
 

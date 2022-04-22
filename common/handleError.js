@@ -2,7 +2,7 @@ const { response } = require("express");
 
 class HttpStatus {
   HTTP_OK(res = response, value) {
-    const status_code = 201;
+    const status_code = 200;
     res.status(status_code);
     res.json(value);
   }

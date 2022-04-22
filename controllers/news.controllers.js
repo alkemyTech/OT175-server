@@ -1,5 +1,6 @@
 const models = require('./../models');
 const { News }  = models;
+const HttpStatus = require("../common/handleError");
 
 class NewsCtrl {
     constructor(){
@@ -35,24 +36,22 @@ async getAll(req, res) {
     };
 
 };
-async getOne(req, res) {
-    try{    
-        const { id } = req.params;
-
+async getANews(req, res) {
+    const { id } = req.params;
+    try{  
         const article = await News.findByPk(
             id, 
             {include: 'category'}
         );
 
         if(!article){
-            return res.status(404).send('article not found');
+            return HttpStatus.HTTP_NOT_FOUND(res);
         }else{
-            return res.json(article) 
+            return HttpStatus.HTTP_OK(res, article) 
         };
 
     }catch(err){
-        console.error(err)
-        return res.status(500).send('internal server error. could not get News');
+        return HttpStatus.HTTP_ERROR_INTERNAL(res);
     };   
 };
 async getByCategory(req, res) {
