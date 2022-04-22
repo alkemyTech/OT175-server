@@ -1,11 +1,11 @@
-const sgMail = require('@sendgrid/mail');
 const ejs = require('ejs');
 const path = require('path');
 const emailTitle = "Welcome";
+const SendEmail = require('./sendEmail');
+
 module.exports = class welcomeMail{
 
     static async sendWelcomeMail(email,title,text,contact){
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
         let emailTemplate;
         
@@ -20,20 +20,8 @@ module.exports = class welcomeMail{
         catch (err){
             return err;
         }
-      
-        const msg = {
-            to: email,
-            from: process.env.SENDGRID_MAIL,
-            subject: emailTitle,
-            html: emailTemplate
-        };
     
-        try {
-            let res = await sgMail.send(msg);
-            return(res);
-        } 
-        catch (err) {
-            return err;
-        }
+        return(SendEmail.sendEmailTo(email,emailTitle,emailTemplate));
+
     }
 }
