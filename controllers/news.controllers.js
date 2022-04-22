@@ -86,7 +86,8 @@ async update(req, res) {
         if(!article){
             return res.status(404).send('article not found')
         }else{
-            return res.json(article)
+            const modifiedArticle = await News.findByPk(id)
+            return res.status(200).json(modifiedArticle)
         };
 
     }catch(err){
