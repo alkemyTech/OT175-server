@@ -55,22 +55,19 @@ class CategoryController {
   update(req, res) {
     const{id}= req.params
     const { name, description, image } = req.body;
-    if (
-      isString(name) &&
-      isString(description) &&
-      isUrl(image)
-    ) {
-      return Category.update(
-        { name, description, image },
-        {
-          where: { id },
-        }
-      )
-        .then(category => res.status(HttpStatusCodes.OK).send(updateOk))
-        .catch(err =>
-          res.status(HttpStatusCodes.BAD_REQUEST).send(err.message)
-        );
-    } else res.status(HttpStatusCodes.BAD_REQUEST).send(resType);
+    return Category.update(
+      { name, description, image },
+      {
+        where: { id },
+      }
+    )
+      .then(async() => {
+        const updated = await Category.findByPk(id)
+        res.status(HttpStatusCodes.OK).json(updated)
+      })
+      .catch(err =>
+        res.status(HttpStatusCodes.BAD_REQUEST).json(err.message)
+      );
   }
 
   remove(req, res) {
