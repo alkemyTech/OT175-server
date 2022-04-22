@@ -6,12 +6,6 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Category,{as: 'category'})
     }
   };News.init({
-    id: {
-        allowNull: false,
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-    },
     name:{
         allowNull:false,
         type: DataTypes.STRING

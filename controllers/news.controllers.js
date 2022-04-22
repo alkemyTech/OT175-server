@@ -22,8 +22,9 @@ async getAll(req, res) {
     try{
         const articles = await News.findAll({
             where: {deletedAt: null},
-            include: 'category'
+            include: ['category']
         });
+        console.log(JSON.stringify(articles));
         if(articles.length===0){
             return res.status(404).send('News is empty')
         };
