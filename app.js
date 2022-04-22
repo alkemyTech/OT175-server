@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 require('dotenv').config();
+const fileUpload = require('express-fileupload');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -13,6 +14,7 @@ const membersRouter = require('./routes/members');
 const testimonialsRouter = require('./routes/testimonials');
 const categoriesRouter = require('./routes/category');
 const newsRouter = require('./routes/news')
+const uploadRouter = require('./routes/uploadFile');
 
 const app = express();
 app.use(cors());
@@ -26,6 +28,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(fileUpload({
+  useTempFiles : true,
+  tempFileDir : '/tmp/',
+  createParentPath: true
+}));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
