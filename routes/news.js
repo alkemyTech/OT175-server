@@ -6,7 +6,7 @@ const controller = new NewsCtrl()
 
 router.route('/')
     .get(controller.getAll)
-    .post(controller.create);
+    .post(controller.createNews);
 
 router.route('/:id')
     .delete(controller.deleteOne)
