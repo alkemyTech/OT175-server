@@ -42,13 +42,19 @@ class ActivityController {
 
   async update(req,res) {
     try {
-      let activity = await Activity.update(
-        req.body,
-        {
-          where:{
-            id: req.params.id
+
+      let activity = await Activity.findOne({
+        where:{
+          id: req.params.id
         }
       });
+
+      if(!activity){
+        return handleError.HTTP_BAD_REQUEST(res);
+      }
+      else{
+        activity.update(req.body);
+      }
       return res.status(httpCodes.OK).json(activity);
     }
     catch (err){
