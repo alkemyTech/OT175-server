@@ -12,4 +12,6 @@ router.post(
     AuthControllers.signin
 );
 
+router.get('/me', AuthControllers.getDataUser);
+
 module.exports = router;
