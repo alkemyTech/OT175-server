@@ -37,8 +37,13 @@ class AuthControllers {
                 as: 'role'
             }]
         });
-
-        res.json( user );
+        
+        try {
+            res.json( user );
+        } catch (err) {
+            console.log(err)
+            res.json({msg: 'There was a problem getting the user data, check with the administrator'});
+        }
     }
 }
 
