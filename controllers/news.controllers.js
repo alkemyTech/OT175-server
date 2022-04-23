@@ -1,7 +1,7 @@
 const models = require("./../models");
-const { News } = models;
+const { News, Category } = models;
 const HttpStatus = require("../common/handleError");
-const ValidateByDataType = require("../common/ValidateByDataType");
+const ValidateByDataType = require("../common/validateByDataType");
 
 class NewsCtrl {
   constructor() {}
@@ -9,11 +9,13 @@ class NewsCtrl {
   async createNews(req, res) {
     const { name, content, image, categoryId } = req.body;
 
+    const targetCat = await Category.findByPk(categoryId)
      if (
       ValidateByDataType.validateString(name) &&
       ValidateByDataType.validateString(content) &&
       ValidateByDataType.validateUrl(image) &&
-      ValidateByDataType.validateNumber(categoryId)
+      ValidateByDataType.validateNumber(categoryId) &&
+      targetCat
     ) {
       try {
         const news = await News.create({ name, content, image, categoryId });
@@ -79,6 +81,13 @@ class NewsCtrl {
     try {
       const { id } = req.params;
       const data = req.body;
+
+      if(data.categoryId){
+        const targetCat= await Category.findByPk(data.categoryId);
+        if(!targetCat){
+          return HttpStatus.HTTP_BAD_REQUEST(res)
+        }
+      }
 
       const article = News.update(data, {
         where: { id: id },
