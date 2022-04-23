@@ -1,5 +1,5 @@
 const models = require('./../models');
-const { News }  = models;
+const { News, Category }  = models;
 
 class NewsCtrl {
     constructor(){
@@ -10,8 +10,14 @@ async create(req, res) {
     try{
         const data = req.body;
         
-        const article = await News.create(data);
-        return res.status(200).json(article)
+        const targetCat = await Category.findByPk(data.categoryId)
+        if(!targetCat){
+            res.status(404).send('category does not exist')
+        }
+        else{
+            const article = await News.create(data);
+            return res.status(200).json(article)
+        }
 
     }catch(err){
         console.error(err);
@@ -80,7 +86,15 @@ async update(req, res) {
         const { id } = req.params;
         const data = req.body;
 
-        const article = News.update(data, {
+        if(data.categoryId){
+            const targetCat = await Category.findByPk(data.categoryId);
+            console.log(targetCat)
+            if(!targetCat){
+                res.status(404).send('category does not exist')
+            };
+        }
+
+        const article = await News.update(data, {
             where:{id: id}
         });
 
