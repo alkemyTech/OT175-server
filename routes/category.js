@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-const {validateCategory} = require('../middlewares/validators')
 const CategoryController= require('../controllers/category');
 const restrictUnauthorizedRoles = require('../middlewares/userAuth');
 

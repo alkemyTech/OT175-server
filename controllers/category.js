@@ -59,7 +59,6 @@ class CategoryController {
     if (
       isString(name) &&
       isString(description) &&
-      isNumber(id) &&
       isUrl(image) && targetCat
     ){
       return Category.update(
