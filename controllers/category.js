@@ -52,22 +52,32 @@ class CategoryController {
       .catch(err => res.status(HttpStatusCodes.BAD_REQUEST).send(err.message));
   }
 
-  update(req, res) {
+  async update(req, res) {
     const{id}= req.params
     const { name, description, image } = req.body;
-    return Category.update(
-      { name, description, image },
-      {
-        where: { id },
-      }
-    )
-      .then(async() => {
-        const updated = await Category.findByPk(id)
-        res.status(HttpStatusCodes.OK).json(updated)
-      })
-      .catch(err =>
-        res.status(HttpStatusCodes.BAD_REQUEST).json(err.message)
-      );
+    const targetCat = await Category.findByPk(id);
+    if (
+      isString(name) &&
+      isString(description) &&
+      isNumber(id) &&
+      isUrl(image) && targetCat
+    ){
+      return Category.update(
+        { name, description, image },
+        {
+          where: { id },
+        }
+      )
+        .then(async() => {
+          const updated = await Category.findByPk(id)
+          res.status(HttpStatusCodes.OK).json(updated)
+        })
+        .catch(err =>
+          res.status(HttpStatusCodes.BAD_REQUEST).json(err.message)
+        );
+    }else{
+      res.status(HttpStatusCodes.BAD_REQUEST).send('invalid datarypes or wrong id')
+    }
   }
 
   remove(req, res) {

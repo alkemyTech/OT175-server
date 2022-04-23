@@ -11,7 +11,6 @@ router.get('/', CategoryController.list);
 router.post('/create', CategoryController.create);
 router.put('/:id',
     restrictUnauthorizedRoles([1]),
-    validateCategory,
     CategoryController.update);
 router.delete('/remove', CategoryController.remove);
 
