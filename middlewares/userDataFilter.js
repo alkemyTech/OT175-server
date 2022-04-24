@@ -10,7 +10,6 @@ function filterDataForUser(rolesAndPermits){
         const role = payload.roleId 
         
         const restrictedFields = rolesAndPermits[role]
-        console.log(restrictedFields)
         for(blocked of restrictedFields){
             delete data[blocked]
         }
