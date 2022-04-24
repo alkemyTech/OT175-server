@@ -1,6 +1,7 @@
 let User = require("../controllers/userControllers");
 const { body, validationResult } = require("express-validator");
 const httpStatusCodes = require("../common/httpCodes");
+const bcrypt = require("bcrypt");
 
 app.post("/", body("email").isEmail(), body("password").isLength({ min: 1 }), async (req, res) => {
   try {
