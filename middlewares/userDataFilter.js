@@ -14,7 +14,6 @@ function filterDataForUser(rolesAndPermits){
         for(blocked of restrictedFields){
             delete data[blocked]
         }
-        console.log(data)
         res.status(200).json(data)
     };
 };
