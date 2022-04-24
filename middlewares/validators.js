@@ -22,21 +22,3 @@ const { validateFields } = require('../common/validateFields');
             .bail(),
             validateFields
    ]
-   exports.validateCategory = [ 
-      check('name', 'The name field cannot be empty')
-      .isString()
-      .not()
-      .isEmpty()
-      .bail(),
-      check('image', 'The image field is incorrect or empty')
-      .isURL({require_protocol: true})
-      .not()
-      .isEmpty()
-      .bail(),
-      check('description', 'A description is needed')
-      .isString()
-      .not()
-      .isEmpty()
-      .bail(),
-      validateFields
-]
