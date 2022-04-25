@@ -1,5 +1,5 @@
 const { response } = require("express");
-
+git 
 const HttpStatus = require("../common/handleError");
 const models = require("../models");
 const { Organization } = models;
@@ -9,6 +9,7 @@ class OrganizationController {
 
   async getOrganizations(req, res) {
     let organizations;
+    
     try {
       organizations = await Organization.findAll();
     } catch (error) {
