@@ -11,7 +11,7 @@ class AuthControllers {
 
             if ( !errors.isEmpty() ) return res.status(400).json({ errors: errors.array() })
 
-            await User.create({
+            const newUser = await User.create({
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 email: req.body.email,
@@ -19,8 +19,10 @@ class AuthControllers {
                 password: req.body.password,
                 roleId: 2,
             })
-            return res.json('The user has been created')                
+            res.locals.userData = newUser;
+            next()                
         } catch (error) {
+            console.log(error)
             next(error)
         }
     }
