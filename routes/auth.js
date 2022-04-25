@@ -14,4 +14,6 @@ router.post(
     createJwt
 );
 
+router.get('/me', AuthControllers.getDataUser);
+
 module.exports = router;

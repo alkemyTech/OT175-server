@@ -1,6 +1,7 @@
 const { body, validationResult } = require('express-validator'); 
 const Model = require('../models');
-const { User } = Model
+const { User, Role } = Model
+const jwt = require('jsonwebtoken');
 
 
 class AuthControllers {
@@ -24,6 +25,26 @@ class AuthControllers {
         } catch (error) {
             console.log(error)
             next(error)
+        }
+    }
+
+    async getDataUser(req, res) {
+        const token = req.headers.authorization.split(" ")[1];
+        const jwtDecoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findOne({ 
+            where: { 'id': jwtDecoded.id },
+            include: [{
+                model: Role,
+                as: 'role'
+            }]
+        });
+        
+        try {
+            res.json( user );
+        } catch (err) {
+            console.log(err)
+            res.json({msg: 'There was a problem getting the user data, check with the administrator'});
         }
     }
 }
