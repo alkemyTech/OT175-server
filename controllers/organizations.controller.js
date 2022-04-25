@@ -1,4 +1,6 @@
 const { response } = require("express");
+const uploadFile = require("../common/fileUpload");
+const { HTTP_ERROR_INTERNAL } = require("../common/handleError");
 
 const HttpStatus = require("../common/handleError");
 const models = require("../models");
@@ -9,6 +11,7 @@ class OrganizationController {
 
   async getOrganizations(req, res) {
     let organizations;
+    
     try {
       organizations = await Organization.findAll();
     } catch (error) {
