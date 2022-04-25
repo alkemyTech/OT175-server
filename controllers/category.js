@@ -1,6 +1,7 @@
 const models = require("../models");
 const { Category } = models;
 const HttpStatusCodes = require("../common/httpCodes");
+const res = require("express/lib/response");
 
 const resAllItems =
   "add a name, a description of type string and an url for image";
@@ -52,6 +53,21 @@ class CategoryController {
       .catch(err => res.status(HttpStatusCodes.BAD_REQUEST).send(err.message));
   }
 
+  async getCategoryNames(req, res){
+    try {
+      const categoriesQuery = await Category.findAll({
+        attributes: ['name']
+      })
+      
+      res.status(HttpStatusCodes.OK).json(categoriesQuery)
+      
+    } catch (error) {
+      res.status(HttpStatusCodes.BAD_REQUEST).send(error.message)
+    }
+   
+  }
+  
+
   update(req, res) {
     const { name, description, image, id } = req.body;
     if (
@@ -74,7 +90,7 @@ class CategoryController {
   }
 
   remove(req, res) {
-    const { id } = req.body;
+    const { id } = req.params;
     if (isNumber(id)) {
       return Category.destroy({
         where: { id },

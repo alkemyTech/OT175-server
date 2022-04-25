@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const Role = require('../controllers/roleController');
+// const Role = require('../controllers/roleController');
 
 module.exports =  function(req,res,next){
     const token = req.header;
