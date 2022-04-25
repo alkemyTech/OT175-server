@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const NewsCtrl = require('../controllers/news.controllers');
+const restrictUnauthorizedRoles = require('../middlewares/userAuth')
+const validateId = require('../middlewares/validateId')
+
 
 const controller = new NewsCtrl()
 
@@ -9,7 +12,7 @@ router.route('/')
     .post(controller.create);
 
 router.route('/:id')
-    .delete(controller.deleteOne)
+    .delete(validateId, restrictUnauthorizedRoles([1]), controller.deleteOne)
     .get(controller.getOne)
     .patch(controller.update)
     .put(controller.update);
