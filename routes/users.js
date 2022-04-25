@@ -1,16 +1,25 @@
-const router = require('express').Router();
-const UserController = require('../controllers/userControllers')
-const selfAuth = require('../middlewares/selfAuth')
+const router = require("express").Router();
+const UserController = require("../controllers/userControllers");
+const selfAuth = require("../middlewares/selfAuth");
 
-router.get('/', UserController.getUsers);
+const { body, param, validationResult } = require("express-validator");
 
-router.get('/:id', UserController.getUserById);
+router.get("/", UserController.getUsers);
 
-router.put('/update/:id', UserController.updateUser);
+router.get("/:id", UserController.getUserById);
 
-router.delete('/:id',
-  selfAuth,
-  UserController.deleteUser
-)
+router.put("/update/:id", UserController.updateUser);
+
+router.delete("/:id", selfAuth, UserController.deleteUser);
+
+router.patch(
+  "/patch/:id",
+
+  body("email", "debe ser un email válido").isEmail(),
+  body("password").isLength({ min: 1 }),
+  param("id", "no es integer").isInt,
+
+  UserController.patchUser
+);
 
 module.exports = router;
