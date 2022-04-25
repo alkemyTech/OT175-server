@@ -22,4 +22,3 @@ const { validateFields } = require('../common/validateFields');
             .bail(),
             validateFields
    ]
-     
