@@ -1,14 +1,13 @@
 var express = require('express');
 var router = express.Router();
 const CategoryController= require('../controllers/category')
-const auth = require('../middlewares/adminAuthentication')
 const isAdminRole = require('../middlewares/adminAuthentication');
 const restrictUnauthorizedRoles = require('../middlewares/userAuth')
 
 /* GET categories listing. */
 
 router.get('/', CategoryController.list);
-router.get('/categoriesNames', auth, CategoryController.getCategoryNames)
+router.get('/categoriesNames', restrictUnauthorizedRoles([1]), CategoryController.getCategoryNames)
 
 // router.get('/:name', CategoryController.find)
 router.post('/', [ isAdminRole ], CategoryController.create)
