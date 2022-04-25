@@ -1,3 +1,5 @@
 node_modules
 .env
+roles.js
+app_borrame.js
 requests.http
