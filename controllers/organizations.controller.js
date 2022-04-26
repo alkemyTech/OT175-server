@@ -55,6 +55,7 @@ class OrganizationController {
   }
 
   async createOrganization(req, res = response) {
+
     const { createdAt, updatedAt, ...body } = req.body;
     const data = {
       ...body,

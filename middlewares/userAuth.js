@@ -1,19 +1,20 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const models = require('../models');
-const { Users } = models
+const { User } = models
 
 
 function restrictUnauthorizedRoles (authorizedRoles) {
     return async(req, res, next)=>{
-        const token = req.header;
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
-        if(payload.id && payload.roleId)
+        const token = req.headers.authorization.split("Bearer ");
+        const payload = jwt.verify(token[1], process.env.JWT_SECRET);
+        let targetUser = {}
+        if(payload.userId && payload.roleId)
         {
-            const targetUser = await Users.findOne({
+            targetUser = await User.findOne({
                 where:{
-                    id: payload.user,
-                    roleId: payload.role
+                    id: payload.userId,
+                    roleId: payload.roleId
                 }
             });
             if (targetUser && authorizedRoles.includes(targetUser.roleId)){
