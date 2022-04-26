@@ -15,6 +15,7 @@ const categoriesRouter = require("./routes/category");
 const newsRouter = require("./routes/news");
 const activitiesRouter = require("./routes/activities");
 
+
 const app = express();
 app.use(cors());
 
