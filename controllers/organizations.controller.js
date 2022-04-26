@@ -1,5 +1,5 @@
 const { response } = require("express");
-git 
+git;
 const HttpStatus = require("../common/handleError");
 const models = require("../models");
 const { Organization } = models;
@@ -9,7 +9,6 @@ class OrganizationController {
 
   async getOrganizations(req, res) {
     let organizations;
-    
     try {
       organizations = await Organization.findAll();
     } catch (error) {
@@ -26,7 +25,6 @@ class OrganizationController {
         where: { id: id },
         attributes: ["name", "phone", "email", "address"],
       });
-
       if (!organization) {
         return HttpStatus.HTTP_BAD_REQUEST(res);
       }
@@ -39,7 +37,6 @@ class OrganizationController {
   async updateOrganization(req, res = response) {
     const { id } = req.params;
     const body = req.body;
-
     let organization;
     let organizationResponse;
     try {
@@ -59,9 +56,7 @@ class OrganizationController {
   }
 
   async createOrganization(req, res = response) {
-
     const { createdAt, updatedAt, ...body } = req.body;
-
     const data = {
       ...body,
       createdAt: new Date(),
@@ -78,7 +73,6 @@ class OrganizationController {
 
   async deleteOrganization(req, res = response) {
     const { id } = req.params;
-
     let organizationResponse;
     try {
       organizationResponse = await Organization.findByPk(id);
