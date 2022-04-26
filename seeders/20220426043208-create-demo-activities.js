@@ -25,7 +25,7 @@ module.exports = {
     
     
     
-     await queryInterface.bulkDelete('Activities', null, {});
+    await queryInterface.bulkDelete('Activities', null, {});
     
   }
 };
