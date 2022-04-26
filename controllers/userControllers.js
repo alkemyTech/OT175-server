@@ -83,7 +83,7 @@ class UserController {
       try {
         let user = await User.findByPk(userId);
 
-        if (user === null) {
+        if (!user) {
           throw new Error("User not found");
         }
 
@@ -108,7 +108,7 @@ class UserController {
           }
         );
 
-        return res.send({ "Registros modificados: ": result });
+        return res.send({ "Updated records: ": result });
       } catch (error) {
         return res.status(HttpStatusCodes.NOT_FOUND).send({ status: error.message });
       }
