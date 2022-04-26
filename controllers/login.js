@@ -1,7 +1,9 @@
-let User = require("../controllers/userControllers");
 const { body, validationResult } = require("express-validator");
 const httpStatusCodes = require("../common/httpCodes");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
+const models = require('../models');
+const { User } = models;
 
 class LoginController {
   async login(req, res, next) {
@@ -10,8 +12,8 @@ class LoginController {
       if (!errors.isEmpty()) {
         throw new Error("Invalid email or password");
       }
-
-      let user = await User.findUserByEmail(req.body.email);
+      const { email } = req.body
+      let user = await User.findOne({ where: { email } });
 
       if (user === null) {
         throw new Error("User/email not found");
@@ -19,15 +21,17 @@ class LoginController {
         let passwordIsOk = bcrypt.compareSync(req.body.password, user.password);
 
         if (passwordIsOk) {
-          //Si todo está bien
-
-          res.json(user);
+          const { id, roleId } = user;
+          const token = jwt.sign({ id, roleId}, process.env.JWT_SECRET, { expiresIn: '8h' });
+    
+          res.json({token});
         } else {
           throw new Error("Invalid password");
         }
       }
     } catch (error) {
       res.status(httpStatusCodes.NOT_FOUND).send({ ok: false });
+      console.log(error);
     }
   }
 }
