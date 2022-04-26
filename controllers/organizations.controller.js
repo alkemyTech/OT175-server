@@ -1,5 +1,4 @@
 const { response } = require("express");
-git;
 const HttpStatus = require("../common/handleError");
 const models = require("../models");
 const { Organization } = models;
