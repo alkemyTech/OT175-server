@@ -108,7 +108,7 @@ class UserController {
           }
         );
 
-        return res.send({ "Registros modificados": result });
+        return res.send({ "Registros modificados: ": result });
       } catch (error) {
         return res.status(HttpStatusCodes.NOT_FOUND).send({ status: error.message });
       }

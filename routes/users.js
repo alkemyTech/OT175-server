@@ -17,8 +17,10 @@ router.patch(
 
   body("email", "debe ser un email válido").isEmail(),
   body("password").isLength({ min: 1 }),
-  param("id", "no es integer").isInt,
-
+  param("id", "id debe ser un número")
+    .exists()
+    .toInt()
+    .custom((id) => !isNaN(id)),
   UserController.patchUser
 );
 
