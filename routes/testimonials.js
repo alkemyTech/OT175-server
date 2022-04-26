@@ -1,6 +1,7 @@
 const express = require('express');
 const Testimonials = require('../controllers/testimonials')
 const router = express.Router();
+const isAdminRole = require('../middlewares/adminAuthentication');
 
 router.get('/:id', function(req, res, next) {
   Testimonials.get(req.params.id).then(result => {
@@ -20,7 +21,7 @@ router.get('/', function(req, res, next) {
   })
 });
 
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id', [ isAdminRole ], function(req, res, next) {
   Testimonials.delete(req.params.id).then(result => {
     res.json(result);
   })
