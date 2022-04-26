@@ -16,4 +16,10 @@ router.post(
 
 router.get('/me', AuthControllers.getDataUser);
 
+router.post("/login", 
+    body("email").isEmail(), 
+    body("password").isLength({ min: 1 }), 
+    AuthControllers.login    
+);
+
 module.exports = router;
