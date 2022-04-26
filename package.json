@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@sendgrid/mail": "^7.6.2",
+    "aws-sdk": "^2.1118.0",
     "bcrypt": "^5.0.1",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
