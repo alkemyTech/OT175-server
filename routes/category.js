@@ -10,8 +10,12 @@ const isAdminRole = require('../middlewares/adminAuthentication');
 
 router.get('/', CategoryController.list)
 // router.get('/:name', CategoryController.find)
-router.post('/', [ isAdminRole ], CategoryController.create)
-router.put('/update', CategoryController.update)
+router.post('/', 
+    [ isAdminRole ], 
+    CategoryController.create)
+router.put('/:id',
+    restrictUnauthorizedRoles(['Admin']),
+    CategoryController.update)
 router.delete('/:id', validateId, restrictUnauthorizedRoles([1]), CategoryController.remove)
 
 module.exports = router;
