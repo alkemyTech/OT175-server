@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING
     },
-    category_id:{
+    categoryId:{
         allowNull:false,
         type: DataTypes.INTEGER
     }
