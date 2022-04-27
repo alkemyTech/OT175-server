@@ -91,6 +91,8 @@ class UserController {
   async patchUser(req, res, next) {
     const errors = validationResult(req);
 
+    var user, result;
+
     if (!errors.isEmpty()) {
       return res
         .status(HttpStatusCodes.BAD_REQUEST)
@@ -99,7 +101,7 @@ class UserController {
       let userId = req.params.id;
 
       try {
-        let user = await User.findByPk(userId);
+        user = await User.findByPk(userId);
 
         if (!user) {
           throw new Error('User not found');
@@ -118,7 +120,7 @@ class UserController {
       let roleId = req.body.roleId ? req.body.roleId : user.roleId;
 
       try {
-        let result = await User.update(
+        result = await User.update(
           {
             firstName: firstName,
             lastName: lastName,
