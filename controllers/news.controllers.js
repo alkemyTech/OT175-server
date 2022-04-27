@@ -96,22 +96,26 @@ async update(req, res) {
     }
 };
 async deleteOne(req, res) {
-    try{    
+      
         const { id } = req.params;
 
-        News.destroy({
-            where:{id: id}
-        }).then(()=>{
-            return res.status(200).send('article successfully deleted')
-        }).catch((err)=>{
-            console.error(err)
-            return res.status(404).send('article not found')
-        });
-        
-    }catch(err){
-        console.error(err)
-        return res.status(500).send('internal server error. could not get News');
-    }
+        let deleteQuery
+        try { deleteQuery = News.findByPk(parseInt(id)) } 
+        catch (error) { return res.status(500).send('internal server error. could not get News')  }
+
+        if(!deleteQuery) return res.status(404).send('News not found')
+        else {
+            News.destroy({
+                where:{id: parseInt(id)}
+            }).then(()=>{
+                return res.status(200).send('article successfully deleted')
+            }).catch((err)=>{
+                console.error(err)
+                return res.status(404).send('article not found')
+            });
+        }
+
+   
 };}
 
 module.exports = NewsCtrl
