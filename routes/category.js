@@ -12,6 +12,6 @@ router.get('/', CategoryController.list)
 // router.get('/:name', CategoryController.find)
 router.post('/', [ isAdminRole ], CategoryController.create)
 router.put('/update', CategoryController.update)
-router.delete('/:id', validateId, restrictUnauthorizedRoles([1]), CategoryController.remove)
+router.delete('/:id', restrictUnauthorizedRoles([1]), CategoryController.remove)
 
 module.exports = router;

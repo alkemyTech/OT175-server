@@ -80,7 +80,9 @@ class CategoryController {
   }
 
   remove(req, res) {
-    const { id } = req.body;
+    
+    const id = parseInt(req.params.id);
+
     if (isNumber(id)) {
       return Category.destroy({
         where: { id },
