@@ -16,7 +16,7 @@ class SendEmail {
       let res = await sgMail.send(msg);
       return res;
     } catch (err) {
-      return err;
+      throw err;
     }
   }
 }
