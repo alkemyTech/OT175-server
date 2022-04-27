@@ -5,8 +5,8 @@ function filterDataForUser(rolesAndPermits){
     return async(req, res, next)=>{
         const {data}  = res.locals
 
-        const token = req.headers.authorization.split("Bearer ");
-        const payload = jwt.verify(token[1], process.env.JWT_SECRET);
+        const {token} = req.headers
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
         const role = payload.roleId 
         
         const restrictedFields = rolesAndPermits[role]

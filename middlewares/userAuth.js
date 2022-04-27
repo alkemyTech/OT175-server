@@ -6,18 +6,13 @@ const { User } = models
 
 function restrictUnauthorizedRoles (authorizedRoles) {
     return async(req, res, next)=>{
-        const token = req.headers.authorization.split("Bearer ");
-        const payload = jwt.verify(token[1], process.env.JWT_SECRET);
+        const {token} = req.headers;
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
         let targetUser = {}
-        if(payload.userId && payload.roleId)
+        if(payload.roleId)
         {
-            targetUser = await User.findOne({
-                where:{
-                    id: payload.userId,
-                    roleId: payload.roleId
-                }
-            });
-            if (targetUser && authorizedRoles.includes(targetUser.roleId)){
+            const role = await Role.findByPk(payload.roleId)
+            if (targetUser && authorizedRoles.includes(role.name)){
                 next();
             }else if(!targetUser){
                 res.status(401).send('invalid credentials')
