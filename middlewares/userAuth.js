@@ -11,7 +11,7 @@ function restrictUnauthorizedRoles (authorizedRoles) {
         if(payload.roleId)
         {
             const role = await Role.findByPk(payload.roleId)
-            if (targetUser && authorizedRoles.includes(role.name)){
+            if (role && authorizedRoles.includes(role.name)){
                 next();
             }else if(!role){
                 res.status(401).send('invalid credentials')
