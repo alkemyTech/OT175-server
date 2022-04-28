@@ -1,27 +1,17 @@
 const models = require("./../models");
 const { News } = models;
 const HttpStatus = require("../common/handleError");
-const ValidateByDataType = require("../common/ValidateByDataType");
+
 
 class NewsCtrl {
   constructor() {}
 
   async createNews(req, res) {
     const { name, content, image, categoryId } = req.body;
-
-     if (
-      ValidateByDataType.validateString(name) &&
-      ValidateByDataType.validateString(content) &&
-      ValidateByDataType.validateUrl(image) &&
-      ValidateByDataType.validateNumber(categoryId)
-    ) {
-      try {
-        const news = await News.create({ name, content, image, categoryId });
-        return HttpStatus.HTTP_CREATE(res, news);
-      } catch (err) {
-        return HttpStatus.HTTP_BAD_REQUEST(res);
-      }
-    } else {
+    try {
+      const news = await News.create({ name, content, image, categoryId });
+      return HttpStatus.HTTP_CREATE(res, news);
+    } catch (err) {
       return HttpStatus.HTTP_BAD_REQUEST(res);
     }
   }
