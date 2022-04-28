@@ -15,6 +15,7 @@ const categoriesRouter = require("./routes/category");
 const newsRouter = require("./routes/news");
 const activitiesRouter = require("./routes/activities");
 const contactsRouter = require("./routes/contacs");
+const imageUploadRouter = require("./routes/imageUpload");
 
 
 const app = express();
@@ -39,6 +40,7 @@ app.use("/categories", categoriesRouter);
 app.use("/news", newsRouter);
 app.use("/activities", activitiesRouter);
 app.use("/", contactsRouter);
+app.use("/imageUpload", imageUploadRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
