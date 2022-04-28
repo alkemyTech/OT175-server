@@ -39,7 +39,7 @@ app.use("/testimonials", testimonialsRouter);
 app.use("/categories", categoriesRouter);
 app.use("/news", newsRouter);
 app.use("/activities", activitiesRouter);
-app.use("/", contactsRouter);
+app.use("/contacts", contactsRouter);
 app.use("/imageUpload", imageUploadRouter);
 
 // catch 404 and forward to error handler
