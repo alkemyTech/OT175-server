@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const NewsCtrl = require('../controllers/news.controllers');
+const restrictUnauthorizedRoles = require('../middlewares/userAuth')
+const validateId = require('../middlewares/validateId')
 const controller = new NewsCtrl()
 const { check } = require('express-validator');
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
@@ -18,7 +20,7 @@ router.route('/')
     ],controller.createNews);
 
 router.route('/:id')
-    .delete(controller.deleteOne)
+    .delete(validateId, restrictUnauthorizedRoles([1]), controller.deleteOne)
     .get(controller.getOne)
     .patch(controller.update)
     .put(controller.update);
