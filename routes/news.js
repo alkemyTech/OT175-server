@@ -6,6 +6,7 @@ const validateId = require('../middlewares/validateId')
 const controller = new NewsCtrl()
 const { check } = require('express-validator');
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
+const isAdminRole = require('../middlewares/adminAuthentication');
 
 router.route('/')
     .get(controller.getAll)
