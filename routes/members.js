@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
+const userAuth = require('../middlewares/userAuth')
 
 const {
     getMembers,
@@ -45,6 +46,6 @@ router.put('/:id', [
 ],updateMember);
 
 /* DELETEE member by ID */
-router.delete('/:id', deleteMember);
+router.delete('/:id', userAuth([1, 2]), deleteMember);
 
 module.exports = router;
