@@ -1,6 +1,7 @@
 const sgMail = require('@sendgrid/mail');
 const ejs = require('ejs');
 const path = require('path');
+require('dotenv').config()
 
 module.exports = class welcomeMail{
 
@@ -23,7 +24,7 @@ module.exports = class welcomeMail{
       
         const msg = {
             to: email,
-            from: process.env.SENDGRID_MAIL,
+            from: process.env.FROM_EMAIL,
             subject: emailTitle,
             html: emailTemplate
         };
