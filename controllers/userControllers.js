@@ -5,6 +5,10 @@ const { User } = Model;
 const { body, param, validationResult } = require('express-validator');
 
 class UserController {
+  constructor() {
+    this.composeUser = this.composeUser.bind(this);
+  }
+
   async getUsers(req, res, next) {
     try {
       const query = await User.findAll();
@@ -88,8 +92,19 @@ class UserController {
     }
   }
 
+  composeUser(req, user) {
+    user.firstName = req.body.firstName ? req.body.firstName : user.firstname;
+    user.lastName = req.body.lastName ? req.body.lastName : user.lastName;
+    user.email = req.body.email ? req.body.email : user.email;
+    user.image = req.body.image ? req.body.image : user.image;
+    user.password = req.body.password ? req.body.password : user.password;
+    user.roleId = req.body.roleId ? req.body.roleId : user.roleId;
+
+    return user;
+  }
+
   async patchUser(req, res, next) {
-    var user, result;
+    var user, result, firstName, lastName, email, image, password, roleId;
 
     const errors = validationResult(req);
 
@@ -112,27 +127,12 @@ class UserController {
           .send({ status: error.message });
       }
 
-      let firstName = req.body.firstName ? req.body.firstName : user.firstname;
-      let lastName = req.body.lastName ? req.body.lastName : user.lastName;
-      let email = req.body.email ? req.body.email : user.email;
-      let image = req.body.image ? req.body.image : user.image;
-      let password = req.body.password ? req.body.password : user.password;
-      let roleId = req.body.roleId ? req.body.roleId : user.roleId;
+      user = this.composeUser(req, user);
 
       try {
-        result = await User.update(
-          {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            image: image,
-            password: password,
-            roleId: roleId,
-          },
-          {
-            where: { id: userId },
-          }
-        );
+        result = await User.update(user, {
+          where: { id: userId },
+        });
       } catch (error) {
         return res
           .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
