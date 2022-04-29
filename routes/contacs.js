@@ -4,7 +4,7 @@ const router = express.Router();
 const { check } = require('express-validator');
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 
-router.post('/contacts', [
+router.post('/', [
     check('name', 'name can´t be empty').not().isEmpty().trim().escape(),
     check('phone', 'phone can´t be empty').not().isEmpty().trim().escape(),
     check('email', 'email invalid').isEmail(),
