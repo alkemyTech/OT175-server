@@ -46,6 +46,6 @@ router.put('/:id', [
 ],updateMember);
 
 /* DELETEE member by ID */
-router.delete('/:id', userAuth([1, 2]), deleteMember);
+router.delete('/:id', userAuth([1]), deleteMember);
 
 module.exports = router;
