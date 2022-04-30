@@ -5,10 +5,6 @@ const { User } = Model;
 const { body, param, validationResult } = require('express-validator');
 
 class UserController {
-  constructor() {
-    this.composeUser = this.composeUser.bind(this);
-  }
-
   async getUsers(req, res, next) {
     try {
       const query = await User.findAll();
