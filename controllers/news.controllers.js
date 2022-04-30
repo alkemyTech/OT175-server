@@ -61,9 +61,16 @@ class NewsCtrl {
   async update(req, res) {
     const { id } = req.params;
     const data = req.body;
+<<<<<<< HEAD
     let modifiedArticle;
     try {
       const article = News.update(data, {
+=======
+    let article;
+    let modifiedArticle;
+    try {
+      article = News.update(data, {
+>>>>>>> d044894de7d743aa0625876db32a8e6480a04000
         where: { id: id },
       });
     } catch (err) {
@@ -73,16 +80,28 @@ class NewsCtrl {
       return HttpStatus.HTTP_NOT_FOUND(res);
     } else {
       modifiedArticle = await News.findByPk(id);
+<<<<<<< HEAD
       return HttpStatus.HTTP_OK(res, article);
     }
   }
   async deleteOne(req, res) {
     const { id } = req.params;
     try {
+=======
+      return HttpStatus.HTTP_OK(res, modifiedArticle);
+    }
+  }
+
+  async deleteOne(req, res) {
+    try {
+      const { id } = req.params;
+
+>>>>>>> d044894de7d743aa0625876db32a8e6480a04000
       News.destroy({
         where: { id: id },
       })
         .then(() => {
+<<<<<<< HEAD
           return HttpStatus.HTTP_OK(res, "article successfully deleted");
         })
         .catch(err => {
@@ -95,3 +114,19 @@ class NewsCtrl {
 }
 
 module.exports = NewsCtrl;
+=======
+          return HttpStatus.HTTP_OK(res, "deleted successed");
+        })
+        .catch(err => {
+          console.error(err);
+          return HttpStatus.HTTP_NOT_FOUND(res);
+        });
+      } catch (err) {
+        console.error(err);
+        return HttpStatus.HTTP_ERROR_INTERNAL(res);
+      }
+    }
+  }
+module.exports = NewsCtrl;
+
+>>>>>>> d044894de7d743aa0625876db32a8e6480a04000

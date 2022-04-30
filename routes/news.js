@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const NewsCtrl = require("../controllers/news.controllers");
-const restrictUnauthorizedRoles = require("../middlewares/userAuth");
-const validateId = require("../middlewares/validateId");
+const NewsCtrl = require('../controllers/news.controllers');
+const restrictUnauthorizedRoles = require('../middlewares/userAuth')
+const validateId = require('../middlewares/validateId')
 const isAdminRole = require('../middlewares/adminAuthentication');
 
 const controller = new NewsCtrl();
