@@ -3,7 +3,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Slides extends Model {
     static associate(models) {
-      Slides.belongsTo(models.Organization, { foreignKey: 'OrganizationId' });
+      Slides.belongsTo(models.Organization);
     }
   }
   Slides.init(
