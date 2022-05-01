@@ -3,7 +3,11 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Organization extends Model {};
+  class Organization extends Model {
+    static associate(models) {
+      Organization.hasMany(models.Slides, {foreignKey: 'slidesId'});
+    }
+  };
   Organization.init({
     name: DataTypes.STRING,
     image: DataTypes.STRING,
