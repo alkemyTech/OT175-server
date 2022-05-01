@@ -3,6 +3,7 @@ const HttpStatusCodes = require('../common/httpCodes');
 const Model = require('../models');
 const { User } = Model;
 const { body, param, validationResult } = require('express-validator');
+const DbAux = require('../common/dbAux');
 
 class UserController {
   async getUsers(req, res, next) {
@@ -122,13 +123,24 @@ class UserController {
           .status(HttpStatusCodes.NOT_FOUND)
           .send({ status: error.message });
       }
+      /*
+      console.log(user.dataValues.email);
 
-      user = this.composeUser(req, user);
+      user = DbAux.composeModelRecord(req.body, user);
+
+      console.log(user.dataValues.email);
+*/
+
+      user.email = req.body.email;
 
       try {
+        console.log('updating');
+
         result = await User.update(user, {
           where: { id: userId },
         });
+
+        console.log(result);
       } catch (error) {
         return res
           .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
