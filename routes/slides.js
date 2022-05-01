@@ -12,5 +12,6 @@ router.put(
     .custom((id) => !isNaN(id)),
   SlideController.updateSlide
 );
-
+//estas validaciones son para prueba y están incompletas,
+//no olvidar completar validaciones antes de PR
 module.exports = router;
