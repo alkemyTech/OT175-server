@@ -1,64 +1,45 @@
 const models = require('../models');
 const { Member } = models;
-const { OK, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('http-status-codes');
+const httpCodes = require('../common/httpCodes');
+const handleError = require('../common/handleError');
+class MemberController {
 
-const getMembers = async(req, res) => {
-    const members = await Member.findAll({
-        where: {
-            'deleted': 0
-        },
-        attributes: ['id','name', 'facebookUrl', 'instagramUrl', 'linkedinUrl', 'image', 'description']
-    });
-
-        // Verify if exists members
-        if ( !members.length ) {
-            return res.status(NOT_FOUND).json({msg:'There is no registered members'});
-        }
-        
+    async getMembers ( req, res ) {
         try {
-            res.status(OK).json(members);
-    } catch (err) {
-        console.log(err);
-        res.status(INTERNAL_SERVER_ERROR).json({msg:'There was a problem getting the members, check with the administrator'})
+            const members = await Member.findAll({});
+    
+            if ( !members.length ) return res.status(httpCodes.NOT_FOUND).json({msg:'There is no registered members'});
+            
+                res.status(httpCodes.OK).json(members);
+        } catch (err) {
+            console.log(err);
+            return handleError.HTTP_ERROR_INTERNAL(err,res);
+        }
     }
-}
 
-const getMember = async(req, res) => {
-    const { id } = req.params;
-    const member = await Member.findOne({
-            where: {
-                id,
-                'deleted': 0
-            },
-            attributes: ['id','name', 'facebookUrl', 'instagramUrl', 'linkedinUrl', 'image', 'description']
-        });
-
-        // Verify if exists members
-        if ( !member ) {
-            return res.status(NOT_FOUND).json({msg:'There is no registered member'});
-        }
-        
+    async getMemberById ( req, res ) {
+        const { id } = req.params;
         try {
-            res.status(OK).json({member});
-    } catch (err) {
-        console.log(err);
-        res.status(INTERNAL_SERVER_ERROR).json({msg:'There was a problem getting the members, check with the administrator'})
+            const member = await Member.findOne({ where: { id  } });          
+    
+            if ( !member ) return res.status(httpCodes.NOT_FOUND).json({msg:'There is no registered member'});
+            
+                res.status(httpCodes.OK).json({member});
+        } catch (err) {
+            console.log(err);
+            return handleError.HTTP_ERROR_INTERNAL(err,res);
+        }
     }
-}
 
-const updateMember = async(req, res) => {
-    const { id } = req.params;
-    const { name, facebookUrl, instagramUrl, linkedinUrl, image, description } = req.body;
-
-        const member = await Member.findOne({ where: { id, 'deleted': 0 } });
-        
-        // Verify if exists members
-        if ( !member ) {
-            return res.status(NOT_FOUND).json({msg:'There is no registered member'});
-        }
-        
+    async updateMemberById ( req, res ) {
+        const { id } = req.params;
+        const { name, facebookUrl, instagramUrl, linkedinUrl, image, description } = req.body;
+    
         try {
-            // Update data
+            const member = await Member.findOne({ where: { id } });
+            
+            if ( !member ) return res.status(httpCodes.NOT_FOUND).json({msg:'There is no registered member'});
+            
             member.update({
                 name,
                 facebookUrl,
@@ -68,60 +49,49 @@ const updateMember = async(req, res) => {
                 description
             });
 
-            res.status(OK).json({msg: 'Member updated'});
-    } catch (err) {
-        console.log(err);
-        res.status(INTERNAL_SERVER_ERROR).json({msg:'There was a problem getting the members, check with the administrator'})
+            res.status(httpCodes.OK).json({msg: 'Member updated'});
+        } catch (err) {
+            console.log(err);
+            return handleError.HTTP_ERROR_INTERNAL(err,res);
+        }
     }
-}
 
-const deleteMember = async(req, res) => {
-    const { id } = req.params;
-    
-    const member = await Member.findOne({ where: { id, 'deleted': 0 } });
-    
-    // Verify if exists members
-    if ( !member ) {
-        return res.status(NOT_FOUND).json({msg:'There is no registered member'});
-    }
-    
-    try {
-         // Update data
-         member.update({
-             'deleted': 1
-         });
-
-         res.status(OK).json({msg: 'Member deleted'});
-    } catch (err) {
-        console.log(err);
-        res.status(INTERNAL_SERVER_ERROR).json({msg:'There was a problem getting the members, check with the administrator'})
-    }
-}
-
-const postMember = async(req, res) => {
-    const { name, facebookUrl, instagramUrl, linkedinUrl, image, description } = req.body;
-    await Member.create({
-        name,
-        facebookUrl,
-            instagramUrl,
-            linkedinUrl,
-            image,
-            description 
-        });
+    async deleteMemberById ( req, res ) {
+        const { id } = req.params;
+        
+        const member = await Member.findOne({ where: { id } });
+        
+        if ( !member ) return res.status(httpCodes.NOT_FOUND).json({msg:'There is no registered member'});
         
         try {
-            res.status(OK).json({msg:'Member created'});
-    } catch (err) {
-        console.log(err);
-        res.status(INTERNAL_SERVER_ERROR).json({msg:'There was a problem getting the members, check with the administrator'})
+             member.destroy({ where: { id } });
+    
+             res.status(httpCodes.OK).json({msg: 'Member deleted'});
+        } catch (err) {
+            console.log(err);
+            return handleError.HTTP_ERROR_INTERNAL(err,res);
+        }
     }
+
+    async postMember ( req, res ) {
+        const { name, facebookUrl, instagramUrl, linkedinUrl, image, description } = req.body;
+        try {
+            await Member.create({
+                name,
+                facebookUrl,
+                instagramUrl,
+                linkedinUrl,
+                image,
+                description 
+            });
+            
+            res.status(httpCodes.OK).json({msg:'Member created'});
+        } catch (err) {
+            console.log(err);
+            return handleError.HTTP_ERROR_INTERNAL(err,res);
+        }
+    }
+
 }
 
-
-module.exports = {
-    getMembers,
-    getMember,
-    updateMember,
-    deleteMember,
-    postMember,
-}
+module.exports = new MemberController();
