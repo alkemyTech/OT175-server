@@ -5,7 +5,7 @@ const { User } = Model;
 const { body, param, validationResult } = require('express-validator');
 
 class UserController {
-  async getUsers(req, res, next) {
+  static async getUsers(req, res, next) {
     try {
       const query = await User.findAll();
       res.json(query);
@@ -14,7 +14,7 @@ class UserController {
     }
   }
 
-  async getUserById(req, res, next) {
+  static async getUserById(req, res, next) {
     try {
       const userQuery = await User.findByPk(parseInt(req.params.id));
       userQuery
@@ -25,7 +25,7 @@ class UserController {
     }
   }
 
-  async updateUser(req, res, next) {
+  static async updateUser(req, res, next) {
     const updates = Object.keys(req.body);
     const allowedUpdates = [
       'firstName',
@@ -62,7 +62,7 @@ class UserController {
     }
   }
 
-  async deleteUser(req, res, next) {
+  static async deleteUser(req, res, next) {
     try {
       const adminQuery = await User.findAll({
         where: {
@@ -88,7 +88,7 @@ class UserController {
     }
   }
 
-  composeUser(req, user) {
+  static composeUser(req, user) {
     user.firstName = req.body.firstName ? req.body.firstName : user.firstname;
     user.lastName = req.body.lastName ? req.body.lastName : user.lastName;
     user.email = req.body.email ? req.body.email : user.email;
@@ -99,8 +99,8 @@ class UserController {
     return user;
   }
 
-  async patchUser(req, res, next) {
-    var user, result, firstName, lastName, email, image, password, roleId;
+  static async patchUser(req, res, next) {
+    let user, result, firstName, lastName, email, image, password, roleId;
 
     const errors = validationResult(req);
 
@@ -123,12 +123,13 @@ class UserController {
           .send({ status: error.message });
       }
 
-      user = this.composeUser(req, user);
-
+      user = UserController.composeUser(req, user);
+      console.log("sale1:", user)
       try {
         result = await User.update(user, {
           where: { id: userId },
         });
+        console.log("sale2:", result)
       } catch (error) {
         return res
           .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
@@ -140,4 +141,4 @@ class UserController {
   }
 }
 
-module.exports = new UserController();
+module.exports = UserController;
