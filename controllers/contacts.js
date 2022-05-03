@@ -1,5 +1,15 @@
 const models = require('../models');
 const { Contact } = models;
+const welcomeMail = require('../services/welcomeMail');
+
+const contact =
+  "Contactanos por los siguientes canales: Mail: somosfundacionmas@gmail.com, Instagram: SomosMás, Facebook: Somos_Más, Teléfono de contacto: 1160112988";
+
+
+const welcomeMail = require('../services/welcomeMail');
+
+const contactText =
+  "Contactanos por los siguientes canales: Mail: somosfundacionmas@gmail.com, Instagram: SomosMás, Facebook: Somos_Más, Teléfono de contacto: 1160112988";
 
 class ContactsController {
     async create( req, res) {
@@ -11,11 +21,17 @@ class ContactsController {
             email,
             message
         });
-
-            res.json({ 'msg': 'Contact created' });
         } catch (err) {
             res.json({msg: 'Error to create contact'});
-        }
+        };
+        welcomeMail.sendWelcomeMail(
+            email, 
+            "Contact Added", 
+            "thank you for adding Contanct info",
+            'Your current contact info is ' + phone,
+            contactText
+            )
+        res.json({ 'msg': 'Contact created' });
     }
 
     async getContacts( req, res ) {
