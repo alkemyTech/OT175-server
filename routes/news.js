@@ -23,10 +23,9 @@ router.route('/')
 router
   .route("/:id")
   .delete(validateId, restrictUnauthorizedRoles([1]), controller.deleteOne)
-  .get([ isAdminRole ], controller.getNewById)
+  .get([ isAdminRole ], controller.getOne)
   .patch(controller.update)
   .put(controller.update);
-
 
 router.route("/category/:categoryId").get(controller.getByCategory);
 

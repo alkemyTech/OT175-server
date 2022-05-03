@@ -68,9 +68,10 @@ class NewsCtrl {
 
     const { id } = req.params;
     const data = req.body;
+    let article;
     let modifiedArticle;
     try {
-      const article = News.update(data, {
+      article = News.update(data, {
         where: { id: id },
       });
 
@@ -82,7 +83,7 @@ class NewsCtrl {
       return HttpStatus.HTTP_NOT_FOUND(res);
     } else {
       modifiedArticle = await News.findByPk(id);
-      return HttpStatus.HTTP_OK(res, article);
+      return HttpStatus.HTTP_OK(res, modifiedArticle);
 
     }
   }
