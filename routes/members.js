@@ -4,11 +4,12 @@ const { check } = require('express-validator');
 const { deleteMemberById } = require('../controllers/members');
 
 const MemberController = require('../controllers/members');
+const member = new MemberController();
 
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 
 /* GET members listing. */
-router.get('/', MemberController.getMembers);
+router.get('/', member.getMembers);
 
 /* POST members. */
 router.post('/', [
@@ -21,10 +22,10 @@ router.post('/', [
     check('image', 'image must be string').isString().trim(),
     check('description').trim().escape(),
     fieldsValidate
-], MemberController.postMember);
+], member.postMember);
 
 /* GET member by ID */
-router.get('/:id', MemberController.getMemberById);
+router.get('/:id', member.getMemberById);
 
 /* PUT member by ID */
 router.put('/:id', [
@@ -37,9 +38,9 @@ router.put('/:id', [
     check('image', 'image must be string').isString().trim(),
     check('description').trim().escape(),
     fieldsValidate
-],MemberController.updateMemberById);
+],member.updateMemberById);
 
 /* DELETEE member by ID */
-router.delete('/:id', MemberController.deleteMemberById);
+router.delete('/:id', member.deleteMemberById);
 
 module.exports = router;
