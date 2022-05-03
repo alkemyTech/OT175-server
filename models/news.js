@@ -7,7 +7,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   };News.init({
     id: {
-        allowNull: false,
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
@@ -27,7 +26,10 @@ module.exports = (sequelize, DataTypes) => {
     categoryId:{
         allowNull:false,
         type: DataTypes.INTEGER
-    }
+    },
+    type:{
+      defaultValue:"news",
+      type: DataTypes.VIRTUAL}
 }, {
     sequelize,
     modelName: 'News',
