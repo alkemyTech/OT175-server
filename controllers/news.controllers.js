@@ -61,10 +61,9 @@ class NewsCtrl {
   async update(req, res) {
     const { id } = req.params;
     const data = req.body;
-    let article;
     let modifiedArticle;
     try {
-      article = News.update(data, {
+      const article = News.update(data, {
         where: { id: id },
       });
     } catch (err) {
@@ -74,29 +73,27 @@ class NewsCtrl {
       return HttpStatus.HTTP_NOT_FOUND(res);
     } else {
       modifiedArticle = await News.findByPk(id);
-      return HttpStatus.HTTP_OK(res, modifiedArticle);
+      return HttpStatus.HTTP_OK(res, article);
     }
   }
-
   async deleteOne(req, res) {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
-
       News.destroy({
         where: { id: id },
       })
         .then(() => {
-          return HttpStatus.HTTP_OK(res, "deleted successed");
+          return HttpStatus.HTTP_OK(res, "article successfully deleted");
         })
         .catch(err => {
-          console.error(err);
           return HttpStatus.HTTP_NOT_FOUND(res);
         });
-      } catch (err) {
-        console.error(err);
-        return HttpStatus.HTTP_ERROR_INTERNAL(res);
-      }
+    } catch (err) {
+      return HttpStatus.HTTP_ERROR_INTERNAL(res);
     }
   }
+}
+
 module.exports = NewsCtrl;
+
 
