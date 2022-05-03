@@ -4,8 +4,7 @@ const HttpStatus = require("../common/handleError");
 
 
 class NewsCtrl {
-  constructor() {}
-
+  
   async createNews(req, res) {
     const { name, content, image, categoryId } = req.body;
     try {

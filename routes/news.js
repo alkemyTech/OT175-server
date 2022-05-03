@@ -22,7 +22,7 @@ router.route('/')
 
 router.route('/:id')
     .delete(validateId, restrictUnauthorizedRoles([1]), controller.deleteOne)
-    .get(controller.getOne)
+    .get([ isAdminRole ], controller.getNewById)
     .patch(controller.update)
     .put(controller.update);
 
