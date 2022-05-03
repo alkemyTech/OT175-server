@@ -17,6 +17,7 @@ router.delete('/:id', selfAuth, UserController.deleteUser);
 router.patch(
   '/patch/:id',
   [
+    selfAuth,
     body('firstName').optional({ nullable: true }).isLength({ min: 1 }),
     body('lastName').optional({ nullable: true }).isLength({ min: 1 }),
 

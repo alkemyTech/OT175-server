@@ -5,6 +5,8 @@ const { User } = Model;
 const { body, param, validationResult } = require('express-validator');
 const dbAux = require('../common/dbAux');
 
+const bcrypt = require('bcrypt');
+
 class UserController {
   static async getUsers(req, res, next) {
     try {
@@ -108,6 +110,10 @@ class UserController {
 
     let body = req.body;
     user = dbAux.composeModelRecord(body, user);
+
+    let hashedPass = await bcrypt.hash(user.password, 8);
+
+    user.password = hashedPass;
 
     try {
       result = await User.update(
