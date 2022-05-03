@@ -3,10 +3,10 @@ const HttpStatusCodes = require('../common/httpCodes');
 const Model = require('../models');
 const { User } = Model;
 const { body, param, validationResult } = require('express-validator');
-const DbAux = require('../common/dbAux');
+const dbAux = require('../common/dbAux');
 
 class UserController {
-  async getUsers(req, res, next) {
+  static async getUsers(req, res, next) {
     try {
       const query = await User.findAll();
       res.json(query);
@@ -15,7 +15,7 @@ class UserController {
     }
   }
 
-  async getUserById(req, res, next) {
+  static async getUserById(req, res, next) {
     try {
       const userQuery = await User.findByPk(parseInt(req.params.id));
       userQuery
@@ -26,7 +26,7 @@ class UserController {
     }
   }
 
-  async updateUser(req, res, next) {
+  static async updateUser(req, res, next) {
     const updates = Object.keys(req.body);
     const allowedUpdates = [
       'firstName',
@@ -63,7 +63,7 @@ class UserController {
     }
   }
 
-  async deleteUser(req, res, next) {
+  static async deleteUser(req, res, next) {
     try {
       const adminQuery = await User.findAll({
         where: {
@@ -89,67 +89,42 @@ class UserController {
     }
   }
 
-  composeUser(req, user) {
-    user.firstName = req.body.firstName ? req.body.firstName : user.firstname;
-    user.lastName = req.body.lastName ? req.body.lastName : user.lastName;
-    user.email = req.body.email ? req.body.email : user.email;
-    user.image = req.body.image ? req.body.image : user.image;
-    user.password = req.body.password ? req.body.password : user.password;
-    user.roleId = req.body.roleId ? req.body.roleId : user.roleId;
+  static async patchUser(req, res, next) {
+    var user, result;
 
-    return user;
-  }
+    let userId = req.params.id;
 
-  async patchUser(req, res, next) {
-    var user, result, firstName, lastName, email, image, password, roleId;
+    try {
+      user = await User.findByPk(userId);
 
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
+      if (!user) {
+        throw new Error('User not found');
+      }
+    } catch (error) {
       return res
-        .status(HttpStatusCodes.BAD_REQUEST)
-        .json({ errors: errors.array() });
-    } else {
-      let userId = req.params.id;
-
-      try {
-        user = await User.findByPk(userId);
-
-        if (!user) {
-          throw new Error('User not found');
-        }
-      } catch (error) {
-        return res
-          .status(HttpStatusCodes.NOT_FOUND)
-          .send({ status: error.message });
-      }
-      /*
-      console.log(user.dataValues.email);
-
-      user = DbAux.composeModelRecord(req.body, user);
-
-      console.log(user.dataValues.email);
-*/
-
-      user.email = req.body.email;
-
-      try {
-        console.log('updating');
-
-        result = await User.update(user, {
-          where: { id: userId },
-        });
-
-        console.log(result);
-      } catch (error) {
-        return res
-          .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-          .send({ status: error.message });
-      }
-
-      return res.send({ 'Updated records: ': result });
+        .status(HttpStatusCodes.NOT_FOUND)
+        .send({ status: error.message });
     }
+
+    let body = req.body;
+    user = dbAux.composeModelRecord(body, user);
+
+    try {
+      result = await User.update(
+        user.dataValues,
+
+        {
+          where: { id: userId },
+        }
+      );
+    } catch (error) {
+      return res
+        .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+        .send({ status: error.message });
+    }
+
+    return res.send({ 'Updated records: ': result });
   }
 }
 
-module.exports = new UserController();
+module.exports = UserController;
