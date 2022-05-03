@@ -95,3 +95,5 @@ class NewsCtrl {
 }
 
 module.exports = NewsCtrl;
+
+
