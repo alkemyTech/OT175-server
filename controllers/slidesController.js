@@ -3,25 +3,42 @@ const { Slide } = Model;
 const SlideController = require('../controllers/SlideController');
 
 class SlideController {
-  async updateSlide(req, res, next) {
-    const errors = validationResult(req);
+  static async updateSlide(req, res, next) {
+    var slide, result;
 
-    if (!errors.isEmpty()) {
-      return res
-        .status(HttpStatusCodes.BAD_REQUEST)
-        .json({ errors: errors.array() });
-    } else {
-      //si todo el middleware y validaciones salió bien:
+    let slideId = req.params.id;
 
-      var slide = {};
+    try {
+      slide = await Slide.findByPk(slideId);
 
-      try {
-        //Slide.update
-      } catch (error) {
-        return res.sendStatus(404).send({ error: error.message });
+      if (!slide) {
+        throw new Error('Slide not found');
       }
+    } catch (error) {
+      return res
+        .status(HttpStatusCodes.NOT_FOUND)
+        .send({ status: error.message });
     }
+
+    let body = req.body;
+    slide = dbAux.composeModelRecord(body, slide);
+
+    try {
+      result = await Slide.update(
+        slide.dataValues,
+
+        {
+          where: { id: slideId },
+        }
+      );
+    } catch (error) {
+      return res
+        .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+        .send({ status: error.message });
+    }
+
+    return res.send({ 'Updated records: ': result });
   }
 }
 
-module.exports = new SlideController();
+module.exports = SlideController;
