@@ -1,5 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+
 const NewsCtrl = require('../controllers/news.controllers');
 const restrictUnauthorizedRoles = require('../middlewares/userAuth')
 const validateId = require('../middlewares/validateId')
@@ -19,14 +20,14 @@ router.route('/')
         check('categoryId', 'categoryId can´t be empty').not().isEmpty().trim().escape().isInt({min:0}).withMessage('amount is not int or amount is less than zero'),
         fieldsValidate
     ],controller.createNews);
+router
+  .route("/:id")
+  .delete(validateId, restrictUnauthorizedRoles([1]), controller.deleteOne)
+  .get([ isAdminRole ], controller.getNewById)
+  .patch(controller.update)
+  .put(controller.update);
 
-router.route('/:id')
-    .delete(validateId, restrictUnauthorizedRoles([1]), controller.deleteOne)
-    .get([ isAdminRole ], controller.getNewById)
-    .patch(controller.update)
-    .put(controller.update);
 
-router.route('/category/:categoryId')
-    .get(controller.getByCategory);
+router.route("/category/:categoryId").get(controller.getByCategory);
 
-    module.exports = router;
+module.exports = router;

@@ -65,44 +65,46 @@ class NewsCtrl {
     }
   }
   async update(req, res) {
-    try {
-      const { id } = req.params;
-      const data = req.body;
 
+    const { id } = req.params;
+    const data = req.body;
+    let modifiedArticle;
+    try {
       const article = News.update(data, {
         where: { id: id },
       });
 
-      if (!article) {
-        return res.status(404).send("article not found");
-      } else {
-        const modifiedArticle = await News.findByPk(id);
-        return res.status(200).json(modifiedArticle);
-      }
-    } catch (err) {
-      console.error(err);
-      return res.status(500).send("internal server error. could not get News");
+      } catch (err) {
+
+      return HttpStatus.HTTP_ERROR_INTERNAL(res);
+    }
+    if (!article) {
+      return HttpStatus.HTTP_NOT_FOUND(res);
+    } else {
+      modifiedArticle = await News.findByPk(id);
+      return HttpStatus.HTTP_OK(res, article);
+
     }
   }
   async deleteOne(req, res) {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
-
       News.destroy({
         where: { id: id },
       })
         .then(() => {
-          return res.status(200).send("article successfully deleted");
+
+          return HttpStatus.HTTP_OK(res, "article successfully deleted");
         })
         .catch(err => {
-          console.error(err);
-          return res.status(404).send("article not found");
+          return HttpStatus.HTTP_NOT_FOUND(res);
         });
     } catch (err) {
-      console.error(err);
-      return res.status(500).send("internal server error. could not get News");
+      return HttpStatus.HTTP_ERROR_INTERNAL(res);
     }
   }
 }
 
 module.exports = NewsCtrl;
+
+

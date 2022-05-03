@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
+const isAdminRole = require('../middlewares/adminAuthentication');
 
 const {
     getMembers,
@@ -13,7 +14,7 @@ const {
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 
 /* GET members listing. */
-router.get('/', getMembers);
+router.get('/', [ isAdminRole ], getMembers);
 
 /* POST members. */
 router.post('/', [
