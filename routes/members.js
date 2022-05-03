@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
-const { deleteMemberById } = require('../controllers/members');
+const isAdminRole = require('../middlewares/adminAuthentication');
 
 const MemberController = require('../controllers/members');
-const member = new MemberController();
+const member = MemberController();
 
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 
 /* GET members listing. */
-router.get('/', member.getMembers);
+router.get('/', [ isAdminRole ], getMembers);
 
 /* POST members. */
 router.post('/', [
