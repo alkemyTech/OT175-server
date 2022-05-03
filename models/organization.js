@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     welcomeText: DataTypes.TEXT,
     aboutUsText: DataTypes.TEXT,
+    urlFacebook: DataTypes.TEXT,    
+    urlLinkedin: DataTypes.TEXT,
+    urlInstagram: DataTypes.TEXT,
     deletedAt: DataTypes.DATE
   }, {
     sequelize,

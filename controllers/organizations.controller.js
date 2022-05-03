@@ -36,22 +36,16 @@ class OrganizationController {
   async updateOrganization(req, res = response) {
     const { id } = req.params;
     const body = req.body;
-    let organization;
-    let organizationResponse;
+   
     try {
-      organization = await Organization.update(body, {
-        where: { id: id },
+      await Organization.update(body, {
+        where: { id },
       });
 
-      organizationResponse = await Organization.findByPk(id);
-
-      if (!organizationResponse) {
-        return HttpStatus.HTTP_BAD_REQUEST(res);
-      }
-    } catch (error) {
+     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
     }
-    return HttpStatus.HTTP_OK(res, organizationResponse);
+    return HttpStatus.HTTP_OK(res, "successed update");
   }
 
   async createOrganization(req, res = response) {
