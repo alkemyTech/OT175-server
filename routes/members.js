@@ -1,19 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
+const isAdminRole = require('../middlewares/adminAuthentication');
 
-const {
-    getMembers,
-    getMember,
-    updateMember,
-    deleteMember,
-    postMember,
-} = require('../controllers/members');
+const MemberController = require('../controllers/members');
 
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 
 /* GET members listing. */
-router.get('/', getMembers);
+router.get('/', [ isAdminRole ], MemberController.getMembers);
 
 /* POST members. */
 router.post('/', [
@@ -26,10 +21,10 @@ router.post('/', [
     check('image', 'image must be string').isString().trim(),
     check('description').trim().escape(),
     fieldsValidate
-],postMember);
+], MemberController.postMember);
 
 /* GET member by ID */
-router.get('/:id', getMember);
+router.get('/:id', MemberController.getMemberById);
 
 /* PUT member by ID */
 router.put('/:id', [
@@ -42,9 +37,9 @@ router.put('/:id', [
     check('image', 'image must be string').isString().trim(),
     check('description').trim().escape(),
     fieldsValidate
-],updateMember);
+],MemberController.updateMemberById);
 
 /* DELETEE member by ID */
-router.delete('/:id', deleteMember);
+router.delete('/:id', MemberController.deleteMemberById);
 
 module.exports = router;
