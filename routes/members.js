@@ -4,12 +4,11 @@ const { check } = require('express-validator');
 const isAdminRole = require('../middlewares/adminAuthentication');
 
 const MemberController = require('../controllers/members');
-const member = MemberController();
 
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 
 /* GET members listing. */
-router.get('/', [ isAdminRole ], getMembers);
+router.get('/', [ isAdminRole ], MemberController.getMembers);
 
 /* POST members. */
 router.post('/', [
@@ -22,10 +21,10 @@ router.post('/', [
     check('image', 'image must be string').isString().trim(),
     check('description').trim().escape(),
     fieldsValidate
-], member.postMember);
+], MemberController.postMember);
 
 /* GET member by ID */
-router.get('/:id', member.getMemberById);
+router.get('/:id', MemberController.getMemberById);
 
 /* PUT member by ID */
 router.put('/:id', [
@@ -38,9 +37,9 @@ router.put('/:id', [
     check('image', 'image must be string').isString().trim(),
     check('description').trim().escape(),
     fieldsValidate
-],member.updateMemberById);
+],MemberController.updateMemberById);
 
 /* DELETEE member by ID */
-router.delete('/:id', member.deleteMemberById);
+router.delete('/:id', MemberController.deleteMemberById);
 
 module.exports = router;

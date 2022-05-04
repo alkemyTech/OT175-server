@@ -4,7 +4,7 @@ const httpCodes = require('../common/httpCodes');
 const handleError = require('../common/handleError');
 class MemberController {
 
-    async getMembers ( req, res ) {
+    static async getMembers ( req, res ) {
         try {
             const members = await Member.findAll({});
     
@@ -17,7 +17,7 @@ class MemberController {
         }
     }
 
-    async getMemberById ( req, res ) {
+    static async getMemberById ( req, res ) {
         const { id } = req.params;
         try {
             const member = await Member.findOne({ where: { id  } });          
@@ -31,7 +31,7 @@ class MemberController {
         }
     }
 
-    async updateMemberById ( req, res ) {
+    static async updateMemberById ( req, res ) {
         const { id } = req.params;
         const { name, facebookUrl, instagramUrl, linkedinUrl, image, description } = req.body;
     
@@ -56,7 +56,7 @@ class MemberController {
         }
     }
 
-    async deleteMemberById ( req, res ) {
+    static async deleteMemberById ( req, res ) {
         const { id } = req.params;
         
         const member = await Member.findOne({ where: { id } });
@@ -73,7 +73,7 @@ class MemberController {
         }
     }
 
-    async postMember ( req, res ) {
+    static async postMember ( req, res ) {
         const { name, facebookUrl, instagramUrl, linkedinUrl, image, description } = req.body;
         try {
             await Member.create({
