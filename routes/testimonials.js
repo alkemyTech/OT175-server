@@ -1,51 +1,22 @@
 const express = require('express');
 const Testimonials = require('../controllers/testimonials')
 const router = express.Router();
-const isAdminRole = require('../middlewares/adminAuthentication');
+const { body } = require('express-validator');
+const { fieldsValidate } = require('../middlewares/fieldsValidate');
 
-router.get('/:id', function(req, res, next) {
-  Testimonials.get(req.params.id).then(result => {
-      res.json(result);
-  })
-  .catch(err => {
-    res.json(err);
-  });
-});
+router.post('/',[
+        body("name", "Name can't be empty").notEmpty().trim(),
+        body("image", "Image must be a valid URL").isURL()
+    ],fieldsValidate, Testimonials.post);
 
-router.get('/', function(req, res, next) {
-  Testimonials.index().then(result => {
-    res.json(result)
-  })
-  .catch(err => {
-    res.json(err);
-  })
-});
+router.get('/', Testimonials.index);
 
-router.delete('/:id', [ isAdminRole ], function(req, res, next) {
-  Testimonials.delete(req.params.id).then(result => {
-    res.json(result);
-  })
-  .catch(err => {
-    res.json(err);
-  })
-});
+router.get('/:id',Testimonials.get);
 
-router.post('/',function(req,res,next) {
-  Testimonials.post(req.body.name,req.body.image,req.body.content).then(result => {
-      res.json(result);
-  })
-  .catch(err => {
-    res.json(err);
-  })
-})
+router.patch('/:id',[
+        body("image", "Image must be a valid URL").isURL()
+    ],fieldsValidate,Testimonials.update);
 
-router.patch('/:id',function(req,res,next) {
-  Testimonials.update(req.params.id,req.body.name,req.body.image,req.body.content).then(result => {
-      res.json(result);
-  })
-  .catch(err => {
-    res.json(err);
-  })
-})
+router.delete('/:id',Testimonials.delete);
 
 module.exports = router;
