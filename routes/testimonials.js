@@ -44,8 +44,6 @@ router.post(
       min: 1,
     }),
 
-    body('image', 'image must exist and be a URL').isURL(),
-
     body(
       'content',
       'content must exist and be minimum 1 character length'
