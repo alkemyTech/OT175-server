@@ -1,11 +1,11 @@
 const router = require('express').Router();
-const SlideController = require('../controllers/SlideController');
+const SlideController = require('../controllers/slidesController');
 const { body, param, validationResult } = require('express-validator');
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 const isAdminRole = require('../middlewares/adminAuthentication');
 
 router.put(
-  '/update/:id',
+  '/:id',
   [
     isAdminRole,
     param('id', 'Id must be a number')

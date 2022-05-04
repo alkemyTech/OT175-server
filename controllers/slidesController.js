@@ -1,6 +1,7 @@
 const Model = require('../models');
-const { Slide } = Model;
-const SlideController = require('../controllers/SlideController');
+const { Slides } = Model;
+const DbAux = require('../common/dbAux');
+const HttpStatusCodes = require('../common/httpCodes');
 
 class SlideController {
   static async updateSlide(req, res, next) {
@@ -9,7 +10,7 @@ class SlideController {
     let slideId = req.params.id;
 
     try {
-      slide = await Slide.findByPk(slideId);
+      slide = await Slides.findByPk(slideId);
 
       if (!slide) {
         throw new Error('Slide not found');
@@ -21,10 +22,10 @@ class SlideController {
     }
 
     let body = req.body;
-    slide = dbAux.composeModelRecord(body, slide);
+    slide = DbAux.composeModelRecord(body, slide);
 
     try {
-      result = await Slide.update(
+      result = await Slides.update(
         slide.dataValues,
 
         {
