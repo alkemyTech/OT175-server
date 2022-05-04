@@ -7,7 +7,7 @@ class SlideController {
   static async updateSlide(req, res, next) {
     var slide, result;
 
-    let slideId = req.params.id;
+    var slideId = req.params.id;
 
     try {
       slide = await Slides.findByPk(slideId);
@@ -22,6 +22,7 @@ class SlideController {
     }
 
     let body = req.body;
+
     slide = DbAux.composeModelRecord(body, slide);
 
     try {
@@ -35,7 +36,7 @@ class SlideController {
     } catch (error) {
       return res
         .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-        .send({ status: error.message });
+        .send({ error: error.message });
     }
 
     return res.send({ 'Updated records: ': result });
