@@ -11,12 +11,7 @@ class ActivityController {
         return res.status(httpCodes.OK).json(activity);
     }
     catch (err){
-        if(err.name === "SequelizeValidationError" || !req.body.name ){
-          return handleError.HTTP_BAD_REQUEST(res);
-        }
-        else{
           return handleError.HTTP_ERROR_INTERNAL(err,res);
-        }
     }
   }
 
@@ -50,7 +45,7 @@ class ActivityController {
       });
 
       if(!activity){
-        return handleError.HTTP_BAD_REQUEST(res);
+        return res.status(400).json("Activity not found");
       }
       else{
         activity.update(req.body);
@@ -58,12 +53,7 @@ class ActivityController {
       return res.status(httpCodes.OK).json(activity);
     }
     catch (err){
-        if(err.name === "SequelizeValidationError"){
-          return handleError.HTTP_BAD_REQUEST(res);
-        }
-        else{
           return handleError.HTTP_ERROR_INTERNAL(err,res);
-        }
     }
   }
 
