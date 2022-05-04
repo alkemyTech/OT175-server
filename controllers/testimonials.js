@@ -1,17 +1,16 @@
 const models = require('../models');
-const { Testimonial }  = models;
+const { Testimonial } = models;
 
 class TestimonialController {
-
-  post(name, image, content) {
+  static post(name, image, content) {
     return Testimonial.create({
       name: name,
       image: image,
-      content: content
+      content: content,
     });
   }
 
-  index(){
+  static index() {
     return Testimonial.findAll();
   }
 
@@ -19,25 +18,28 @@ class TestimonialController {
     return Testimonial.findByPk(id);
   }
 
-  update(id, name, image, content) {
-    return Testimonial.update({
+  static update(id, name, image, content) {
+    return Testimonial.update(
+      {
         name: name,
         image: image,
-        content: content
-    }, {
+        content: content,
+      },
+      {
         where: {
-            id: id
-        }
-    });
+          id: id,
+        },
+      }
+    );
   }
 
-  delete(id) {
+  static delete(id) {
     return Testimonial.destroy({
-        where: {
-            id: id
-        }
-    })
+      where: {
+        id: id,
+      },
+    });
   }
 }
 
-module.exports = new TestimonialController(); 
+module.exports = TestimonialController;
