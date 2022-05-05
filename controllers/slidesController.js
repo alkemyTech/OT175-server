@@ -5,9 +5,9 @@ const HttpStatusCodes = require('../common/httpCodes');
 
 class SlideController {
   static async updateSlide(req, res, next) {
-    var slide, result;
+    let slide, result;
 
-    var slideId = req.params.id;
+    let slideId = req.params.id;
 
     try {
       slide = await Slides.findByPk(slideId);
@@ -21,9 +21,7 @@ class SlideController {
         .send({ status: error.message });
     }
 
-    let body = req.body;
-
-    slide = DbAux.composeModelRecord(body, slide);
+    slide = DbAux.composeModelRecord(req.body, slide);
 
     try {
       result = await Slides.update(
