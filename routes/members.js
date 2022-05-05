@@ -20,7 +20,7 @@ router.post('/', [
     check('linkedinUrl').trim(),
     check('image', 'image can´t be empty').not().isEmpty().trim(),
     check('image', 'image must be string').isString().trim(),
-    check('image').custom( validateUrl ),
+    check('image', 'URL invalid').custom( validateUrl ),
     check('description').trim().escape(),
     fieldsValidate
 ], MemberController.postMember);
@@ -37,7 +37,7 @@ router.put('/:id', [
     check('linkedinUrl').trim(),
     check('image', 'image can´t be empty').not().isEmpty().trim(),
     check('image', 'image must be string').isString().trim(),
-    check('image').custom( validateUrl ),
+    check('image', 'URL invalid').custom( validateUrl ),
     check('description').trim().escape(),
     fieldsValidate
 ],MemberController.updateMemberById);
