@@ -1,5 +1,5 @@
 const models = require('../models');
-const { Post, Role } = models;
+const { Post, Role, User } = models;
 const jwt = require('jsonwebtoken');
 const httpCodes = require('../common/httpCodes');
 const handleError = require('../common/handleError');
@@ -11,7 +11,16 @@ class PostController {
         const { page } = req.query;
 
         try{
-            const posts = await Post.findAll({ offset: parseInt( page ), limit: 10});
+            const posts = await Post.findAll({ 
+                offset: parseInt( page ), 
+                limit: 10,
+                include: [
+                    {
+                        model: User,
+                        as: 'user'
+                    }
+                ]
+            });
             if( !posts.length ) return res.status(httpCodes.NOT_FOUND).json({ msg: 'There is no registered posts'});
             
             res.status(httpCodes.OK).json(posts);
@@ -25,7 +34,15 @@ class PostController {
     static async getPostById( req, res) {
         const { id } = req.params;
         try{
-        const post = await Post.findOne({ where: { id }});
+        const post = await Post.findOne({ 
+            where: { id },
+            include: [
+                {
+                    model: User,
+                    as: 'user'
+                }
+            ]
+        });
 
         if( !post ) return res.status(httpCodes.NOT_FOUND).json({msg: 'post not found'});
 
