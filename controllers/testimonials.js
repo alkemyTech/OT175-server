@@ -16,8 +16,9 @@ class TestimonialController {
   }
 
   async index(req,res){
+    const { page } = req.query;
     try{
-        let testimonials = await Testimonial.findAll();
+        let testimonials = await Testimonial.findAll({ offset: parseInt( page ), limit: 10});
         return res.status(httpCodes.OK).json(testimonials);
     }
     catch (err){
