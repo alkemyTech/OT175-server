@@ -6,7 +6,7 @@ class TestimonialController {
     return Testimonial.create({
       name: name,
       image: image,
-      content: content,
+      content: content
     });
   }
 
@@ -23,12 +23,12 @@ class TestimonialController {
       {
         name: name,
         image: image,
-        content: content,
+        content: content
       },
       {
         where: {
-          id: id,
-        },
+          id: id
+        }
       }
     );
   }
@@ -36,8 +36,8 @@ class TestimonialController {
   static delete(id) {
     return Testimonial.destroy({
       where: {
-        id: id,
-      },
+        id: id
+      }
     });
   }
 }
