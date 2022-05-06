@@ -17,6 +17,7 @@ const activitiesRouter = require("./routes/activities");
 const contactsRouter = require("./routes/contacs");
 const imageUploadRouter = require("./routes/imageUpload")
 const backofficeRouter = require("./routes/backoffice");
+const postsRouter = require("./routes/posts");
 
 
 const app = express();
@@ -43,6 +44,7 @@ app.use("/activities", activitiesRouter);
 app.use("/contacts", contactsRouter);
 app.use("/imageUpload", imageUploadRouter);
 app.use("/backoffice", backofficeRouter);
+app.use("/posts", postsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

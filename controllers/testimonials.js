@@ -1,44 +1,77 @@
 const models = require('../models');
-const { Testimonial } = models;
+
+const { Testimonial }  = models;
+const httpCodes = require('../common/httpCodes')
+const handleError = require('../common/handleError')
 
 class TestimonialController {
-  static post(name, image, content) {
-    return Testimonial.create({
-      name: name,
-      image: image,
-      content: content
-    });
+
+  static async post(req,res) {
+    try {
+        let testimonial = await Testimonial.create(req.body);
+        return res.status(httpCodes.OK).json(testimonial);
+    }
+    catch (err){
+        return handleError.HTTP_ERROR_INTERNAL(err,res);
+    }
   }
 
-  static index() {
-    return Testimonial.findAll();
+  static async index(req,res){
+    const { page } = req.query;
+    try{
+        let testimonials = await Testimonial.findAll({ offset: parseInt( page ), limit: 10});
+        return res.status(httpCodes.OK).json(testimonials);
+    }
+    catch (err){
+        return handleError.HTTP_ERROR_INTERNAL(err,res);
+    }
   }
 
-  get(id) {
-    return Testimonial.findByPk(id);
+  static async get(req,res) {
+    try{
+      let testimonial = await Testimonial.findByPk(req.params.id);
+      return res.status(httpCodes.OK).json(testimonial);
+    }
+    catch (err){
+      return handleError.HTTP_ERROR_INTERNAL(err,res);
+    }
   }
 
-  static update(id, name, image, content) {
-    return Testimonial.update(
-      {
-        name: name,
-        image: image,
-        content: content
-      },
-      {
-        where: {
-          id: id
+
+  static async update(req,res) {
+    try {
+
+      let testimonial = await Testimonial.findOne({
+        where:{
+          id: req.params.id
         }
+      });
+
+      if(!testimonial){
+        return handleError.HTTP_BAD_REQUEST(res)
       }
-    );
+      else{
+        testimonial.update(req.body);
+      }
+      return res.status(httpCodes.OK).json(testimonial);
+    }
+    catch (err){
+          return handleError.HTTP_ERROR_INTERNAL(err,res);
+    }
   }
 
-  static delete(id) {
-    return Testimonial.destroy({
-      where: {
-        id: id
-      }
-    });
+  static async delete(req,res) {
+    try{
+      let testimonial = await Testimonial.destroy({
+        where: {
+          id: req.params.id
+        }
+      });
+      return res.status(httpCodes.OK).json(testimonial);
+    }
+    catch (err){
+      return handleError.HTTP_ERROR_INTERNAL(err,res);
+    }
   }
 }
 
