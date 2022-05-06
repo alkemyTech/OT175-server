@@ -1,10 +1,21 @@
 const express = require('express');
-const Testimonials = require('../controllers/testimonials')
+const Testimonials = require('../controllers/testimonials');
 const router = express.Router();
-const { body } = require('express-validator');
+
+const isAdminRole = require('../middlewares/adminAuthentication');
+const { body, param, validationResult } = require('express-validator');
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 
-router.post('/',[
+
+router.post('/',[isAdminRole,
+    
+
+    body(
+      'content',
+      'content must exist and be minimum 1 character length'
+    ).isLength({
+      min: 1,
+    }),
         body("name", "Name can't be empty").notEmpty().trim(),
         body("image", "Image must be a valid URL").isURL()
     ],fieldsValidate, Testimonials.post);
