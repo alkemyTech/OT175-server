@@ -13,7 +13,10 @@ module.exports = {
         type: Sequelize.STRING
       },
       image: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        validate: {
+          isUrl: true
+        }
       },
       content: {
         type: Sequelize.STRING
