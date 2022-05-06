@@ -13,4 +13,6 @@ router.post('/', [
     fieldsValidate
 ], ContactsController.create);
 
+router.get('/', ContactsController.getContacts);
+
 module.exports = router;

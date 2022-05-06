@@ -6,6 +6,7 @@ const logger = require('morgan');
 const cors = require('cors');
 require('dotenv').config();
 
+
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const organizationsRouter = require('./routes/organizations');
@@ -44,6 +45,7 @@ app.use('/contacts', contactsRouter);
 app.use('/imageUpload', imageUploadRouter);
 app.use('/backoffice', backofficeRouter);
 app.use('/slides', slidesRouter);
+app.use('/posts', postsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

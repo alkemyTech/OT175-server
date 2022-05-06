@@ -15,7 +15,12 @@ module.exports = (sequelize, DataTypes) => {
   };
   Testimonial.init({
     name: DataTypes.STRING,
-    image: DataTypes.STRING,
+    image: {
+      type: DataTypes.STRING,
+      validate: {
+        isUrl: true
+      }
+    },
     content: DataTypes.STRING
   }, {
     sequelize,
