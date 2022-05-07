@@ -9,13 +9,9 @@ class SlideController {
     let slide, result;
 
     try {
-
       slide = await Slides.findByPk(req.params.id);
-
     } catch (err) {
-
       return handleError.HTTP_ERROR_INTERNAL(err,res);
-
     }
 
     if (!slide) {
