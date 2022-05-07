@@ -38,4 +38,3 @@ router.patch(
 router.delete('/:id', [isAdminRole], Testimonials.delete);
 
 module.exports = router;
-const isAdminRole = require('../middlewares/adminAuthentication');
