@@ -5,7 +5,7 @@ const HttpStatusCodes = require('../common/httpCodes');
 const handleError = require('../common/handleError');
 
 class SlideController {
-  static async deleteSlide(req, res, next) {
+  static async delete(req, res, next) {
     let slide, result;
 
     try {
@@ -34,7 +34,7 @@ class SlideController {
       return handleError.HTTP_ERROR_INTERNAL(err,res);
     }
 
-    return res.status(httpCodes.OK).json(result);
+    return res.status(HttpStatusCodes.OK).json(result);
   }
 }
 
