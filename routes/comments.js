@@ -11,4 +11,6 @@ router.put('/:id', [
     fieldsValidate
 ], CommentController.updateCommentById);
 
+router.delete("/:id",CommentController.delete);
+
 module.exports = router;
