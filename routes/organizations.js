@@ -16,7 +16,7 @@ router.get('/public/:id', Organization.getOrganization);
 
 router.post(
   '/public',
-  restrictUnauthorizedRoles([1]),
+  restrictUnauthorizedRoles(["Admin"]),
   validateOrganization,
   Organization.createOrganization
 );
