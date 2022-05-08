@@ -1,14 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
+
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 const restrictUnauthorizedRoles = require('../middlewares/userAuth')
-
 const CommentController = require('../controllers/comments');
 
-router.create('/',
+router.post('/',
+    check('body', 'issue in body').isString().not().isEmpty().trim().escape(),
+    check('postId', 'issue in postId').isInt().not().isEmpty().escape(),
+    fieldsValidate,
     restrictUnauthorizedRoles(['Admin', 'Standard']),
-    CommentController.createPost);
+    CommentController.createComment);
 
 // router.get('')
 
