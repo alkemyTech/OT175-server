@@ -55,11 +55,12 @@ class CommentController {
         else{
             let isAdmin;
             try{
-                isAdmin = roleController.isAdmin(jwtDecoded.roleId);
+                isAdmin = await roleController.isAdmin(jwtDecoded.roleId);
             }
             catch(err){
                 return handleError.HTTP_ERROR_INTERNAL(err,res);
             }
+            
             if(comment.userId !== jwtDecoded.id && !isAdmin) 
                 return res.status(httpCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Acess denied' });
             else {
