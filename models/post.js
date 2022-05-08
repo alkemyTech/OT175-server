@@ -4,10 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   class Post extends Model {
     static associate(models) {
       Post.belongsTo(models.User, { as: 'user' });
-      Post.hasMany(models.Comment, {
-        foreignKey: 'commentId',
-        as: 'comments',
-      });
+      
     }
   }
   Post.init(
