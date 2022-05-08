@@ -104,7 +104,7 @@ class PostController {
         const { title, body, image } = req.body;
 
         try {
-            const token = req.headers.authorization.split(" ")[1];
+            const {token} = req.headers;
 
             if ( !token ) return res.json({msg: 'no token in request'});
 
