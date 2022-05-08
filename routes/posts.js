@@ -2,12 +2,16 @@ const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
-
+const restrictUnauthorizedRoles = require('../middlewares/userAuth')
 const PostController = require('../controllers/posts');
 
 router.get('/', PostController.getPosts);
 
 router.get('/:id', PostController.getPostById);
+
+router.get('/:id/comments',
+    restrictUnauthorizedRoles(['Admin', 'Standard']),
+    PostController.getComments);
 
 router.put('/:id', [
     check('title', 'name can´t be empty').not().isEmpty().trim().escape(),

@@ -1,5 +1,5 @@
 const models = require('../models');
-const { Post, Role, User } = models;
+const { Post, Role, User, Comment } = models;
 const jwt = require('jsonwebtoken');
 const httpCodes = require('../common/httpCodes');
 const handleError = require('../common/handleError');
@@ -42,6 +42,23 @@ class PostController {
                     as: 'user'
                 }
             ]
+        });
+
+        if( !post ) return res.status(httpCodes.NOT_FOUND).json({msg: 'post not found'});
+
+        res.status(httpCodes.OK).json({post});
+        } catch (err) {
+            console.log(err);
+            return handleError.HTTP_ERROR_INTERNAL(err,res);
+        }
+    }
+
+    static async getComments( req, res) {
+        const { id } = req.params;
+        try{
+        const post = await Post.findOne({ 
+            where: { id },
+            include: 'comments'
         });
 
         if( !post ) return res.status(httpCodes.NOT_FOUND).json({msg: 'post not found'});
