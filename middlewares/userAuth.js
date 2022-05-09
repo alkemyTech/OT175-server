@@ -1,25 +1,19 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const models = require('../models');
-const { User } = models
+const { Role } = models
 
 
 function restrictUnauthorizedRoles (authorizedRoles) {
     return async(req, res, next)=>{
-        const token = req.headers.authorization.split("Bearer ");
-        const payload = jwt.verify(token[1], process.env.JWT_SECRET);
-        let targetUser = {}
-        if(payload.userId && payload.roleId)
+        const {token} = req.headers;
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        if(payload.roleId)
         {
-            targetUser = await User.findOne({
-                where:{
-                    id: payload.userId,
-                    roleId: payload.roleId
-                }
-            });
-            if (targetUser && authorizedRoles.includes(targetUser.roleId)){
+            const role = await Role.findByPk(payload.roleId)
+            if (role && authorizedRoles.includes(role.name)){
                 next();
-            }else if(!targetUser){
+            }else if(!role){
                 res.status(401).send('invalid credentials')
             }
             else{

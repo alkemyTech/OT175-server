@@ -94,7 +94,6 @@ class NewsCtrl {
         where: { id: id },
       })
         .then(() => {
-
           return HttpStatus.HTTP_OK(res, "article successfully deleted");
         })
         .catch(err => {
@@ -107,5 +106,3 @@ class NewsCtrl {
 }
 
 module.exports = NewsCtrl;
-
-

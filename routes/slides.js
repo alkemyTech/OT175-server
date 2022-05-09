@@ -1,8 +1,13 @@
-const router = require('express').Router();
+const express = require('express');
+
+const router = express.Router();
+
 const SlideController = require('../controllers/slidesController');
 const { body, param, validationResult } = require('express-validator');
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 const isAdminRole = require('../middlewares/adminAuthentication');
+
+router.get('/:id', SlideController.getSlideByPk);
 
 router.put(
   '/:id',
@@ -17,7 +22,7 @@ router.put(
     body('imageUrl', 'imageUrl must exist and be a URL').isURL(),
 
     body('text', 'text must exist and be minimum length 1').isLength({
-      min: 1,
+      min: 1
     }),
 
     body('order', 'order must exist and be a number')
@@ -28,8 +33,11 @@ router.put(
       .toInt()
       .custom((organizationId) => !isNaN(organizationId)),
 
-    fieldsValidate,
+    fieldsValidate
   ],
   SlideController.updateSlide
 );
+
+router.delete('/:id', [isAdminRole], SlideController.delete);
+
 module.exports = router;

@@ -1,51 +1,40 @@
 const express = require('express');
-const Testimonials = require('../controllers/testimonials')
+const Testimonials = require('../controllers/testimonials');
 const router = express.Router();
+
 const isAdminRole = require('../middlewares/adminAuthentication');
+const { body, param, validationResult } = require('express-validator');
+const { fieldsValidate } = require('../middlewares/fieldsValidate');
 
-router.get('/:id', function(req, res, next) {
-  Testimonials.get(req.params.id).then(result => {
-      res.json(result);
-  })
-  .catch(err => {
-    res.json(err);
-  });
-});
+router.post(
+  '/',
+  [
+    isAdminRole,
 
-router.get('/', function(req, res, next) {
-  Testimonials.index().then(result => {
-    res.json(result)
-  })
-  .catch(err => {
-    res.json(err);
-  })
-});
+    body(
+      'content',
+      'content must exist and be minimum 1 character length'
+    ).isLength({
+      min: 1
+    }),
+    body('name', "Name can't be empty").notEmpty().trim(),
+    body('image', 'Image must be a valid URL').isURL()
+  ],
+  fieldsValidate,
+  Testimonials.post
+);
 
-router.delete('/:id', [ isAdminRole ], function(req, res, next) {
-  Testimonials.delete(req.params.id).then(result => {
-    res.json(result);
-  })
-  .catch(err => {
-    res.json(err);
-  })
-});
+router.get('/', Testimonials.index);
 
-router.post('/',function(req,res,next) {
-  Testimonials.post(req.body.name,req.body.image,req.body.content).then(result => {
-      res.json(result);
-  })
-  .catch(err => {
-    res.json(err);
-  })
-})
+router.get('/:id', Testimonials.get);
 
-router.patch('/:id',function(req,res,next) {
-  Testimonials.update(req.params.id,req.body.name,req.body.image,req.body.content).then(result => {
-      res.json(result);
-  })
-  .catch(err => {
-    res.json(err);
-  })
-})
+router.patch(
+  '/:id',
+  [isAdminRole, body('image', 'Image must be a valid URL').isURL()],
+  fieldsValidate,
+  Testimonials.update
+);
+
+router.delete('/:id', [isAdminRole], Testimonials.delete);
 
 module.exports = router;
