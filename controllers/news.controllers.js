@@ -1,6 +1,7 @@
 const models = require('./../models');
 const { News } = models;
 const HttpStatus = require('../common/handleError');
+require('dotenv').config();
 
 class NewsCtrl {
   async createNews(req, res) {
@@ -44,10 +45,13 @@ class NewsCtrl {
           ? page + 1
           : page;
 
+      let port = process.env.PORT ? process.env.PORT : '3000';
+      let host = process.env.HOST ? process.env.HOST : 'localhost:' + port;
+
       return res.status(200).json({
-        urlPreviousPage: req.baseUrl + '?page=' + previousPage,
+        urlPreviousPage: host + req.baseUrl + '?page=' + previousPage,
         records: articles,
-        urlNextPage: req.baseUrl + '?page=' + nextPage
+        urlNextPage: host + req.baseUrl + '?page=' + nextPage
       });
     } catch (err) {
       console.error(err);
