@@ -17,10 +17,6 @@ router.put(
   CommentController.updateCommentById
 );
 
-<<<<<<< HEAD
 router.get('/', [isAdminRole], CommentController.getAllComments)
 
 module.exports = router;
-=======
-module.exports = router;
->>>>>>> a8d86eb15fa0618b9d15dd5e1c426ba412ea2c3c
