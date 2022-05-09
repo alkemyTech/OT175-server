@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
+
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
-const restrictUnauthorizedRoles = require('../middlewares/userAuth')
+const restrictUnauthorizedRoles = require('../middlewares/userAuth');
+const isAdminRole = require('../middlewares/adminAuthentication');
+
 const PostController = require('../controllers/posts');
 
 router.get('/', PostController.getPosts);
@@ -13,7 +16,10 @@ router.get('/:id/comments',
     restrictUnauthorizedRoles(['Admin', 'Standard']),
     PostController.getComments);
 
-router.put('/:id', [
+router.put(
+  '/:id',
+  [
+    isAdminRole,
     check('title', 'name can´t be empty').not().isEmpty().trim().escape(),
     check('title', 'name must be string').isString().trim().escape(),
     check('body', 'name can´t be empty').not().isEmpty().trim().escape(),
@@ -21,11 +27,16 @@ router.put('/:id', [
     check('image', 'name can´t be empty').not().isEmpty().trim().escape(),
     check('image', 'name must be string').isString().trim().escape(),
     fieldsValidate
-], PostController.updatePostById);
+  ],
+  PostController.updatePostById
+);
 
-router.delete('/:id', PostController.deletePostById);
+router.delete('/:id', [isAdminRole], PostController.deletePostById);
 
-router.post('/', [
+router.post(
+  '/',
+  [
+    isAdminRole,
     check('title', 'name can´t be empty').not().isEmpty().trim().escape(),
     check('title', 'name must be string').isString().trim().escape(),
     check('body', 'name can´t be empty').not().isEmpty().trim().escape(),
@@ -33,6 +44,8 @@ router.post('/', [
     check('image', 'name can´t be empty').not().isEmpty().trim().escape(),
     check('image', 'name must be string').isString().trim().escape(),
     fieldsValidate
-], PostController.createPost);
+  ],
+  PostController.createPost
+);
 
 module.exports = router;
