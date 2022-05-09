@@ -38,10 +38,10 @@ class NewsCtrl {
 
       let previousPage = page === 0 ? 0 : page - 1;
 
-      let quantityOfRecords = await News.count();
+      let quantityOfRecordsInTable = await News.count();
 
       let nextPage =
-        initialRecord + quantityOfRecordsPerPage < quantityOfRecords
+        initialRecord + quantityOfRecordsPerPage < quantityOfRecordsInTable
           ? page + 1
           : page;
 
