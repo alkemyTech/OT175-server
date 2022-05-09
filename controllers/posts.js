@@ -1,5 +1,5 @@
 const models = require('../models');
-const { Post, Role, User } = models;
+const { Post, Role, User, Comment } = models;
 const jwt = require('jsonwebtoken');
 const httpCodes = require('../common/httpCodes');
 const handleError = require('../common/handleError');
@@ -39,14 +39,25 @@ class PostController {
             include: [
                 {
                     model: User,
-                    as: 'user'
+                    as: 'user',
+                    attributes: ['id', 'firstName', 'lastName', 'image'],
                 }
             ]
         });
 
         if( !post ) return res.status(httpCodes.NOT_FOUND).json({msg: 'post not found'});
+        const comments = await Comment.findAll({ 
+            where: { 'postId': post.id },
+            attributes: ['id', 'body', 'createdAt', 'updatedAt'], 
+            include: [
+                {
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName', 'image']
+                }
+            ]
+        });
 
-        res.status(httpCodes.OK).json({post});
+        res.status(httpCodes.OK).json({post, comments});
         } catch (err) {
             console.log(err);
             return handleError.HTTP_ERROR_INTERNAL(err,res);
