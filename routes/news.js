@@ -38,8 +38,11 @@ router
   );
 router
   .route('/:id')
-  .delete([validateId, restrictUnauthorizedRoles([1])], controller.deleteOne)
-  .get([isAdminRole], controller.getOne)
+  .delete(
+    [isAdminRole, validateId, restrictUnauthorizedRoles([1])],
+    controller.deleteOne
+  )
+  .get(controller.getOne)
   .patch([isAdminRole], controller.update)
   .put([isAdminRole], controller.update);
 
