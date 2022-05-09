@@ -1,11 +1,12 @@
 const models = require('../models');
+
 const { Testimonial }  = models;
 const httpCodes = require('../common/httpCodes')
 const handleError = require('../common/handleError')
 
 class TestimonialController {
 
-  async post(req,res) {
+  static async post(req,res) {
     try {
         let testimonial = await Testimonial.create(req.body);
         return res.status(httpCodes.OK).json(testimonial);
@@ -15,7 +16,7 @@ class TestimonialController {
     }
   }
 
-  async index(req,res){
+  static async index(req,res){
     const { page } = req.query;
     try{
         let testimonials = await Testimonial.findAll({ offset: parseInt( (page - 1) * 10 ), limit: 10});
@@ -26,7 +27,7 @@ class TestimonialController {
     }
   }
 
-  async get(req,res) {
+  static async get(req,res) {
     try{
       let testimonial = await Testimonial.findByPk(req.params.id);
       return res.status(httpCodes.OK).json(testimonial);
@@ -36,7 +37,8 @@ class TestimonialController {
     }
   }
 
-  async update(req,res) {
+
+  static async update(req,res) {
     try {
 
       let testimonial = await Testimonial.findOne({
@@ -58,7 +60,7 @@ class TestimonialController {
     }
   }
 
-  async delete(req,res) {
+  static async delete(req,res) {
     try{
       let testimonial = await Testimonial.destroy({
         where: {
@@ -73,4 +75,4 @@ class TestimonialController {
   }
 }
 
-module.exports = new TestimonialController(); 
+module.exports = TestimonialController;

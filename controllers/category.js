@@ -46,8 +46,9 @@ class CategoryController {
       res.status(HttpStatusCodes.BAD_REQUEST).send(resAllItems);
     }
   }
-  list(_, res) {
-    return Category.findAll({})
+  list(req, res) {
+    const { page } = req.query;
+    return Category.findAll({ offset: parseInt( page ), limit: 10})
       .then(categories => res.status(HttpStatusCodes.OK).send(categories))
       .catch(err => res.status(HttpStatusCodes.BAD_REQUEST).send(err.message));
   }
