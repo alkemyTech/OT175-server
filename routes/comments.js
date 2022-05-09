@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
 
-const isAdminRole = require('../middlewares/adminAuthentication');
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 const restrictUnauthorizedRoles = require('../middlewares/userAuth')
 const CommentController = require('../controllers/comments');
@@ -15,15 +14,10 @@ router.post('/',
     CommentController.createComment);
 
 
-router.put(
-  '/:id',
-  [
-    isAdminRole,
+router.put('/:id', [
     check('body', 'name can´t be empty').not().isEmpty().trim().escape(),
     check('body', 'name must be string').isString().trim().escape(),
     fieldsValidate
-  ],
-  CommentController.updateCommentById
-);
+], CommentController.updateCommentById);
 
 module.exports = router;

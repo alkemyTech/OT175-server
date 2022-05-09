@@ -2,7 +2,7 @@
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('Posts', [{
+    await queryInterface.bulkInsert('posts', [{
       title: 'Title post 1',
       body: 'facebook.com/María_Irola',
       image: 'https://res.cloudinary.com/dggzhar2j/image/upload/v1649968636/Mar%C3%ADa_Irola_eqgvwu.jpg',
@@ -11,7 +11,7 @@ module.exports = {
       updatedAt: new Date
     }], {});
 
-    await queryInterface.bulkInsert('Posts', [{
+    await queryInterface.bulkInsert('posts', [{
       title: 'Title post 2',
       body: 'facebook.com/María_Irola',
       image: 'https://res.cloudinary.com/dggzhar2j/image/upload/v1649968636/Mar%C3%ADa_Irola_eqgvwu.jpg',
@@ -20,7 +20,7 @@ module.exports = {
       updatedAt: new Date
     }], {});
 
-    await queryInterface.bulkInsert('Posts', [{
+    await queryInterface.bulkInsert('posts', [{
       title: 'Title post 3',
       body: 'facebook.com/María_Irola',
       image: 'https://res.cloudinary.com/dggzhar2j/image/upload/v1649968636/Mar%C3%ADa_Irola_eqgvwu.jpg',
@@ -31,6 +31,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Posts', null, {});
+    await queryInterface.bulkDelete('posts', null, {});
   }
 };
