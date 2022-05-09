@@ -49,7 +49,6 @@ router.put(
   MemberController.updateMemberById
 );
 
-/* DELETEE member by ID */
 router.delete('/:id', [isAdminRole], MemberController.deleteMemberById);
 
 module.exports = router;

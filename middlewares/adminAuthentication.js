@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken');
 const models = require('../models');
 const { Role } = models;
 
-module.exports = async function (req, res, next) {
+module.exports = async function (req, res, next) {  
+  if (!req.headers.authorization) return res.json({ msg: 'no token in request' });
   const token = req.headers.authorization.split(' ')[1];
-  if (!token) return res.json({ msg: 'no token in request' });
 
   try {
     const { roleId } = jwt.verify(token, process.env.JWT_SECRET);
