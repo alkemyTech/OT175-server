@@ -39,7 +39,6 @@ router.put('/:id', [
     fieldsValidate
 ],MemberController.updateMemberById);
 
-/* DELETEE member by ID */
 router.delete('/:id', MemberController.deleteMemberById);
 
 module.exports = router;
