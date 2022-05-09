@@ -34,9 +34,12 @@ class CommentController {
 
     static async delete(req,res) {
         const token = req.headers.authorization.split(" ")[1];
+
         if (!token) 
             return res.json({msg: 'no token in request'});
+
         const jwtDecoded = jwt.verify( token, process.env.JWT_SECRET );
+
         let comment;
         try {
             comment = await Comment.findOne({
@@ -52,29 +55,30 @@ class CommentController {
         if(!comment){
             return handleError.HTTP_BAD_REQUEST(res)
         }
-        else{
-            let isAdmin;
-            try{
-                isAdmin = await roleController.isAdmin(jwtDecoded.roleId);
-            }
-            catch(err){
-                return handleError.HTTP_ERROR_INTERNAL(err,res);
-            }
-            
-            if(comment.userId !== jwtDecoded.id && !isAdmin) 
-                return res.status(httpCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Acess denied' });
-            else {
-                let response;
-                try{
-                    response = await comment.destroy();
-                }
-                catch(err){
-                    return handleError.HTTP_ERROR_INTERNAL(err,res);
-                }
-                return res.status(httpCodes.OK).json(response);
-            }
+        
+        let isAdmin;
+
+        try{
+            isAdmin = await roleController.isAdmin(jwtDecoded.roleId);
         }
-       
+        catch(err){
+            return handleError.HTTP_ERROR_INTERNAL(err,res);
+        }
+        
+        if(comment.userId !== jwtDecoded.id && !isAdmin) 
+            return res.status(httpCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Acess denied' });
+        
+        let response;
+        
+        try{
+            response = await comment.destroy();
+        }
+        catch(err){
+            return handleError.HTTP_ERROR_INTERNAL(err,res);
+        }
+        return res.status(httpCodes.OK).json(response);
+            
+        
       }
 }
 
