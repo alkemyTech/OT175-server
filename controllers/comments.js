@@ -1,10 +1,6 @@
 const models = require('../models');
-<<<<<<< HEAD
 const { Comment, Role,  } = models;
 const roleController = require('../controllers/roleController')
-=======
-const { Comment, Role } = models;
->>>>>>> 26f8061145273a09bbbe72836a718c57c42fc113
 const jwt = require('jsonwebtoken');
 const httpCodes = require('../common/httpCodes');
 const handleError = require('../common/handleError');
