@@ -1,6 +1,7 @@
 const models = require("../models");
 const { Category } = models;
 const HttpStatusCodes = require("../common/httpCodes");
+const { HTTP_ERROR_INTERNAL, HTTP_BAD_REQUEST, HTTP_NOT_FOUND, HTTP_OK } = require("../common/handleError");
 
 const resAllItems =
   "add a name, a description of type string and an url for image";
@@ -92,5 +93,22 @@ class CategoryController {
         );
     } else res.status(HttpStatusCodes.BAD_REQUEST).send(resType);
   }
+
+  async findCategory(req, res) {
+    const {id} = req.params;
+
+    let category;
+    try {
+      category = await Category.findByPk(id);
+    } catch (error) {
+     HTTP_ERROR_INTERNAL(err, res); 
+    }
+    if(!category){
+      return HTTP_NOT_FOUND(res);
+    }
+    HTTP_OK(res, category);
+    return category;
+  }
+
 }
 module.exports = new CategoryController();

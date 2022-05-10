@@ -22,6 +22,7 @@ const imageUploadRouter = require('./routes/imageUpload');
 const backofficeRouter = require('./routes/backoffice');
 const slidesRouter = require('./routes/slides');
 
+
 const app = express();
 app.use(cors());
 

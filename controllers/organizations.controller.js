@@ -49,13 +49,14 @@ class OrganizationController {
   }
 
   async createOrganization(req, res = response) {
-
+    
     const { createdAt, updatedAt, ...body } = req.body;
     const data = {
       ...body,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+
     let organization;
     try {
       organization = await Organization.create(data);
