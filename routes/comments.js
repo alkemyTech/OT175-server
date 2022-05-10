@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
 
+const isAdminRole = require('../middlewares/adminAuthentication');
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 const restrictUnauthorizedRoles = require('../middlewares/userAuth')
 const CommentController = require('../controllers/comments');
