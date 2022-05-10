@@ -66,7 +66,7 @@ class CommentController {
         }
         
         if(comment.userId !== jwtDecoded.id && !isAdmin) 
-            return res.status(httpCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Acess denied' });
+            return res.status(httpCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Access denied' });
         
         let response;
         
