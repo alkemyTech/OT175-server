@@ -8,8 +8,9 @@ class CommentController {
 
     static async createComment(req, res){
         const {body, postId} = req.body;
-        const {token} = req.headers;
-        const {id} = jwt.verify(token, process.env.JWT_SECRET);
+        const token = req.headers.authorization.split(" ")[1];
+        if ( !token ) return res.json({msg: 'no token in request'});
+        const {id} = jwt.verify( token, process.env.JWT_SECRET );
         try{
             const newComment = await Comment.create({
                 userId: id,
