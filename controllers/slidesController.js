@@ -5,6 +5,20 @@ const HttpStatusCodes = require('../common/httpCodes');
 const handleError = require('../common/handleError');
 
 class SlideController {
+
+  static async index(req,res,next) {
+    let slides;
+    try{
+      slides = await Slides.findAll({
+        attributes: ["imageUrl","order"]
+      });
+    }
+    catch (err){
+      return handleError.HTTP_ERROR_INTERNAL(err,res);
+    }
+    return res.status(HttpStatusCodes.OK).json(slides);
+  }
+  
   static async updateSlide(req, res, next) {
     let slide, result;
 
