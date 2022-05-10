@@ -6,7 +6,14 @@ const validateId = require('../middlewares/validateId');
 const isAdminRole = require('../middlewares/adminAuthentication');
 
 
-router.get('/', CategoryController.list);
+router.get('/', CategoryController.list)
+router.get('/:id', [ isAdminRole ], CategoryController.findCategory);
+// router.get('/:name', CategoryController.find)
+router.post('/', [ isAdminRole ], CategoryController.create)
+router.put('/update',
+restrictUnauthorizedRoles([1]),
+ CategoryController.update)
+router.delete('/remove', CategoryController.remove)
 
 router.post('/', [isAdminRole], CategoryController.create);
 

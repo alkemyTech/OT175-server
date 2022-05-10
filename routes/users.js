@@ -1,12 +1,15 @@
 const router = require('express').Router();
 const UserController = require('../controllers/userControllers');
 const selfAuth = require('../middlewares/selfAuth');
+const restrictUnauthorizedRoles = require('../middlewares/userAuth')
 
 const { body, param, validationResult } = require('express-validator');
 
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 
-router.get('/', UserController.getUsers);
+router.get('/',
+restrictUnauthorizedRoles(['Admin']),
+  UserController.getUsers);
 
 router.get('/:id', UserController.getUserById);
 

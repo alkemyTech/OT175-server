@@ -64,6 +64,28 @@ class PostController {
         }
     }
 
+    static async getComments( req, res) {
+        const { id } = req.params;
+        try{
+            const post = await Post.findOne({ 
+                where: { id },
+                include: [
+                    {
+                        model: Comment,
+                        as: 'comments'
+                    }
+                ]
+            });
+
+        if( !post ) return res.status(httpCodes.NOT_FOUND).json({msg: 'post not found'});
+
+        res.status(httpCodes.OK).json(post.comments);
+        } catch (err) {
+            console.log(err);
+            return handleError.HTTP_ERROR_INTERNAL(err,res);
+        }
+    }
+
     static async updatePostById( req, res ) {
         const { id } = req.params;
         const { title, body, image } = req.body;
