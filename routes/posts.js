@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
+
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
+const restrictUnauthorizedRoles = require('../middlewares/userAuth');
 const isAdminRole = require('../middlewares/adminAuthentication');
 
 const PostController = require('../controllers/posts');
@@ -9,6 +11,10 @@ const PostController = require('../controllers/posts');
 router.get('/', PostController.getPosts);
 
 router.get('/:id', PostController.getPostById);
+
+router.get('/:id/comments',
+    restrictUnauthorizedRoles(['Admin', 'Standard']),
+    PostController.getComments);
 
 router.put(
   '/:id',
