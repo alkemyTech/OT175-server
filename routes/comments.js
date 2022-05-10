@@ -20,4 +20,7 @@ router.put('/:id', [
     fieldsValidate
 ], CommentController.updateCommentById);
 
+router.delete("/:id",CommentController.delete);
+router.get('/', [isAdminRole], CommentController.getAllComments)
+
 module.exports = router;
