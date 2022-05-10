@@ -4,6 +4,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const swaggerUI = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc')
 require('dotenv').config();
 
 const postsRouter = require('./routes/posts');
@@ -22,6 +24,25 @@ const imageUploadRouter = require('./routes/imageUpload');
 const backofficeRouter = require('./routes/backoffice');
 const slidesRouter = require('./routes/slides');
 
+const options = {
+  definition: {
+    openapi: "3.0.3",
+    info: {
+      title: 'ONG api',
+      version: '1.3.0',
+      description: 'Api de la aceleración de Alkemy'
+    },
+    servers:[
+      {
+        url: 'http://localhost:3000'
+      }
+    ],
+  },
+  apis: ['./routes/*.js',
+        './controllers/*.js']
+};
+
+const specs = swaggerJsDoc(options);
 
 const app = express();
 app.use(cors());
@@ -35,6 +56,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/api/docs', swaggerUI.serve, swaggerUI.setup(specs));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
