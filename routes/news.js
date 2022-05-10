@@ -8,6 +8,7 @@ const controller = new NewsCtrl();
 const { check } = require('express-validator');
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 const isAdminRole = require('../middlewares/adminAuthentication');
+const validateUrl = require('../helpers/validateUrl');
 
 router
   .route('/')
@@ -40,9 +41,19 @@ router
   .route('/:id')
   .delete([validateId, restrictUnauthorizedRoles([1])], controller.deleteOne)
   .get([isAdminRole], controller.getOne)
-  .patch([isAdminRole], controller.update)
-  .put([isAdminRole], controller.update);
+  .patch([isAdminRole], controller.update);
+
+router.put('/:id', [
+  isAdminRole,
+  check('name', 'name can´t be empty').not().isEmpty().trim(),
+  check('content', 'content can´t be empty').not().isEmpty().trim(),
+  check('image', 'image can´t be empty').not().isEmpty().trim(),
+  check('image', 'image must be string').isString().trim(),
+  check('image', 'URL invalid').custom( validateUrl ),
+  fieldsValidate
+], controller.update);
 
 router.route('/category/:categoryId').get(controller.getByCategory);
+
 
 module.exports = router;

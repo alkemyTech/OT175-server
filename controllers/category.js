@@ -47,11 +47,25 @@ class CategoryController {
       res.status(HttpStatusCodes.BAD_REQUEST).send(resAllItems);
     }
   }
-  list(req, res) {
+  async list(req, res) {
+    const defaultValue = await Category.findAll({ offset: 0, limit: 10 });
+    if( !req.query.page ) return res.status(HttpStatusCodes.OK).json({ defaultValue });
     const { page } = req.query;
-    return Category.findAll({ offset: parseInt( (page - 1) * 10 ), limit: 10})
-      .then(categories => res.status(HttpStatusCodes.OK).send(categories))
-      .catch(err => res.status(HttpStatusCodes.BAD_REQUEST).send(err.message));
+    const categories = await Category.findAll({ offset: parseInt( (page - 1) * 10 ), limit: 10});
+
+    if( !categories.length ) return res.status(HttpStatusCodes.NOT_FOUND).json({msg:'categories not found'});
+
+    let back = parseInt( page ) -1;
+    const next = parseInt( page ) +1
+    if( back === 0) {
+      back = 1;
+    }
+
+    res.status(HttpStatusCodes.OK).json({ 
+      back: `${process.env.HOST}/categories?page=${ back }`, 
+      next: `${process.env.HOST}/categories?page=${ next }`, 
+      categories
+    });
   }
 
   async update(req, res) {

@@ -23,7 +23,9 @@
     "morgan": "~1.9.1",
     "mysql2": "^2.2.3",
     "node-base64-image": "^2.0.4",
-    "sequelize": "^6.3.5"
+    "sequelize": "^6.3.5",
+    "swagger-jsdoc": "^6.2.1",
+    "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15",
