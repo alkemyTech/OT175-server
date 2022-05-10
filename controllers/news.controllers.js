@@ -67,25 +67,14 @@ class NewsCtrl {
   async update(req, res) {
 
     const { id } = req.params;
-    const data = req.body;
-    let article;
-    let modifiedArticle;
-    try {
-      article = News.update(data, {
-        where: { id: id },
-      });
+    const { name, content, image } = req.body;
 
-      } catch (err) {
+    const article = await News.findOne({ where: { id } });
+    if ( !article ) return HttpStatus.HTTP_NOT_FOUND(res);
 
-      return HttpStatus.HTTP_ERROR_INTERNAL(res);
-    }
-    if (!article) {
-      return HttpStatus.HTTP_NOT_FOUND(res);
-    } else {
-      modifiedArticle = await News.findByPk(id);
-      return HttpStatus.HTTP_OK(res, modifiedArticle);
+    article.update({ name, content, image });
+    return HttpStatus.HTTP_OK(res, "article successfully updated");
 
-    }
   }
   async deleteOne(req, res) {
     const { id } = req.params;
