@@ -1,10 +1,5 @@
 const models = require('../models');
-<<<<<<< HEAD
-const { Comment, Role,  } = models;
-const roleController = require('../controllers/roleController')
-=======
 const { Comment, Role } = models;
->>>>>>> 26f8061145273a09bbbe72836a718c57c42fc113
 const jwt = require('jsonwebtoken');
 const httpCodes = require('../common/httpCodes');
 const handleError = require('../common/handleError');
@@ -39,56 +34,7 @@ class CommentController {
     } catch (err) {
       return handleError.HTTP_ERROR_INTERNAL(err, res);
     }
-}
-    static async delete(req,res) {
-        const token = req.headers.authorization.split(" ")[1];
-
-        if (!token) 
-            return res.json({msg: 'no token in request'});
-
-        const jwtDecoded = jwt.verify( token, process.env.JWT_SECRET );
-
-        let comment;
-        try {
-            comment = await Comment.findOne({
-              where:{
-                id: req.params.id
-              }
-            });
-        }
-        catch (err){
-          return handleError.HTTP_ERROR_INTERNAL(err,res);
-        }
-        
-        if(!comment){
-            return handleError.HTTP_BAD_REQUEST(res)
-        }
-        
-        let isAdmin;
-
-        try{
-            isAdmin = await roleController.isAdmin(jwtDecoded.roleId);
-        }
-        catch(err){
-            return handleError.HTTP_ERROR_INTERNAL(err,res);
-        }
-        
-        if(comment.userId !== jwtDecoded.id && !isAdmin) 
-            return res.status(httpCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Access denied' });
-        
-        let response;
-        
-        try{
-            response = await comment.destroy();
-        }
-        catch(err){
-            return handleError.HTTP_ERROR_INTERNAL(err,res);
-        }
-        return res.status(httpCodes.OK).json(response);
-            
-        
-      }
-
+  }
   static async getAllComments(req, res) {
     let comments;
     try {
