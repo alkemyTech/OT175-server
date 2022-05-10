@@ -7,7 +7,7 @@ const { body, param, validationResult } = require('express-validator');
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
 const isAdminRole = require('../middlewares/adminAuthentication');
 
-router.delete('/:id',SlideController.delete);
+router.delete('/:id',[isAdminRole],SlideController.delete);
 router.get('/:id',[isAdminRole], SlideController.getSlideByPk);
 router.get('/',[isAdminRole],SlideController.index);
 
