@@ -56,7 +56,7 @@ class MemberController {
       if (!member)
         return res
           .status(httpCodes.NOT_FOUND)
-          .json({ msg: 'There is no registered member' });
+          .json({ msg: 'There are no registered member' });
 
       res.status(httpCodes.OK).json({ member });
     } catch (err) {
