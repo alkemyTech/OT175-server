@@ -2,6 +2,7 @@ const Model = require('../models');
 const { Slides } = Model;
 const HttpStatusCodes = require('../common/httpCodes');
 const handleError = require('../common/handleError');
+const DecodingImage = require('../common/decodingImage');
 
 class SlideController {
   static async delete(req, res, next) {
@@ -44,6 +45,30 @@ class SlideController {
         .json({ msg: 'slide not found' });
     }
     return handleError.HTTP_OK(res, slide);
+  }
+
+  static async creationSlide(req, res) {
+    const { imageBase64, text, order, organizationId } = req.body;
+    let slide;
+    let imageUrl;
+    try {
+      imageUrl = await DecodingImage.decoding(imageBase64);
+    } catch (err) {
+      return handleError.HTTP_BAD_REQUEST(res);
+    }
+    
+    try {
+      slide = await Slides.create({
+        imageUrl,
+        text,
+        order,
+        organizationId,
+      });
+    } catch (err) {
+      return handleError.HTTP_BAD_REQUEST(res);
+    }
+
+    return handleError.HTTP_CREATE(res, slide);
   }
 }
 
