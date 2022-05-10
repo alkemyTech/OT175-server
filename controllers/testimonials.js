@@ -39,7 +39,7 @@ class TestimonialController {
     catch (err){
         return handleError.HTTP_ERROR_INTERNAL(err,res);
     }
-  }
+  } 
 
   static async get(req,res) {
     try{
