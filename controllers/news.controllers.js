@@ -1,10 +1,8 @@
-const models = require("./../models");
+const models = require('./../models');
 const { News } = models;
-const HttpStatus = require("../common/handleError");
-
+const HttpStatus = require('../common/handleError');
 
 class NewsCtrl {
-  
   async createNews(req, res) {
     const { name, content, image, categoryId } = req.body;
     try {
@@ -16,34 +14,64 @@ class NewsCtrl {
   }
 
   async getAll(req, res) {
+    let { page } = req.query;
+    page = parseInt(page);
+
+    let quantityOfRecordsPerPage = 10; //to do: unhardcode this
+    let initialRecord = page * quantityOfRecordsPerPage;
+
     try {
-      const articles = await News.findAll({
+      let articles = await News.findAndCountAll({
         where: { deletedAt: null },
-        include: "category",
+
+        offset: initialRecord,
+        limit: quantityOfRecordsPerPage,
+
+        include: 'Category'
       });
       if (articles.length === 0) {
-        return res.status(404).send("News is empty");
+        return res
+          .status(404)
+          .send('News and/or the page requested has no records');
       }
-      return res.status(200).json(articles);
+
+      let previousPage = page === 0 ? 0 : page - 1;
+
+      let quantityOfRecordsInTable = articles.count;
+
+      let nextPage =
+        initialRecord + quantityOfRecordsPerPage < quantityOfRecordsInTable
+          ? page + 1
+          : page;
+
+      let port = process.env.PORT ? process.env.PORT : '3000';
+      let host = process.env.HOST ? process.env.HOST : 'localhost:' + port;
+
+      return res.status(200).json({
+        urlPreviousPage: host + req.baseUrl + '?page=' + previousPage,
+        records: articles.rows,
+        urlNextPage: host + req.baseUrl + '?page=' + nextPage
+      });
     } catch (err) {
       console.error(err);
-      return res.status(500).send("internal server error. could not get News");
+      return res.status(500).send('internal server error. could not get News');
     }
   }
+
   async getOne(req, res) {
     try {
       const { id } = req.params;
 
-      const article = await News.findByPk(id, { include: "category" });
+      const article = await News.findByPk(id, { include: 'category' });
 
       if (!article) {
-        return res.status(404).send("article not found");
+        return res.status(404).send('article not found');
       } else {
         return res.json(article);
       }
     } catch (err) {
       console.error(err);
-      return res.status(500).send("internal server error. could not get News");
+      return res.status(500).send('internal server error. could not get News');
     }
   }
   async getByCategory(req, res) {
@@ -51,41 +79,39 @@ class NewsCtrl {
       const { id } = req.params;
 
       const articles = await News.findAll({
-        where: { category_id: id },
+        where: { category_id: id }
       });
 
       if (!articles) {
-        return res.status(404).send("No articles found");
+        return res.status(404).send('No articles found');
       } else {
         return res.json(articles);
       }
     } catch (err) {
       console.error(err);
-      return res.status(500).send("internal server error. could not get News");
+      return res.status(500).send('internal server error. could not get News');
     }
   }
   async update(req, res) {
-
     const { id } = req.params;
     const { name, content, image } = req.body;
 
     const article = await News.findOne({ where: { id } });
-    if ( !article ) return HttpStatus.HTTP_NOT_FOUND(res);
+    if (!article) return HttpStatus.HTTP_NOT_FOUND(res);
 
     article.update({ name, content, image });
-    return HttpStatus.HTTP_OK(res, "article successfully updated");
-
+    return HttpStatus.HTTP_OK(res, 'article successfully updated');
   }
   async deleteOne(req, res) {
     const { id } = req.params;
     try {
       News.destroy({
-        where: { id: id },
+        where: { id: id }
       })
         .then(() => {
-          return HttpStatus.HTTP_OK(res, "article successfully deleted");
+          return HttpStatus.HTTP_OK(res, 'article successfully deleted');
         })
-        .catch(err => {
+        .catch((err) => {
           return HttpStatus.HTTP_NOT_FOUND(res);
         });
     } catch (err) {
