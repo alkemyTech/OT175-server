@@ -29,6 +29,9 @@ module.exports = {
           as: 'postId',
         },
       },
+      deletedAt: {
+        type: Sequelize.DATE
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
