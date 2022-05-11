@@ -27,7 +27,7 @@ class NewsCtrl {
         offset: initialRecord,
         limit: quantityOfRecordsPerPage,
 
-        include: 'category'
+        include: 'Category'
       });
       if (articles.length === 0) {
         return res
