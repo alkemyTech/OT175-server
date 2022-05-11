@@ -22,7 +22,7 @@ class NewsCtrl {
     let initialRecord = page * quantityOfRecordsPerPage;
 
     try {
-      const articles = await News.findAll({
+      let articles = await News.findAndCountAll({
         where: { deletedAt: null },
 
         offset: initialRecord,
@@ -38,7 +38,7 @@ class NewsCtrl {
 
       let previousPage = page === 0 ? 0 : page - 1;
 
-      let quantityOfRecordsInTable = await News.count();
+      let quantityOfRecordsInTable = articles.count;
 
       let nextPage =
         initialRecord + quantityOfRecordsPerPage < quantityOfRecordsInTable
@@ -50,7 +50,7 @@ class NewsCtrl {
 
       return res.status(200).json({
         urlPreviousPage: host + req.baseUrl + '?page=' + previousPage,
-        records: articles,
+        records: articles.rows,
         urlNextPage: host + req.baseUrl + '?page=' + nextPage
       });
     } catch (err) {
