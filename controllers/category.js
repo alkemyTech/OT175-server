@@ -55,8 +55,9 @@ class CategoryController {
   async list(req, res) {
     const page = req.query.page ? parseInt(req.query.page) : 0;
 
-    let host = process.env.HOST ? process.env.HOST : 'localhost';
-    let port = process.env.PORT ? process.env.PORT : '3000';
+    let host = process.env.HOST
+      ? process.env.HOST
+      : 'localhost:' + (process.env.PORT ? process.env.PORT : '3000');
 
     const limit = 10; //to do: unhardcode this
 
@@ -85,8 +86,8 @@ class CategoryController {
     let nextPage = (page + 1) * limit < categories.count ? page + 1 : page;
 
     res.status(HttpStatusCodes.OK).json({
-      backPage: host + ':' + port + '/categories?page=' + backPage,
-      nextPage: host + ':' + port + '/categories?page=' + nextPage,
+      backPage: host + '/categories?page=' + backPage,
+      nextPage: host + '/categories?page=' + nextPage,
       categories: categories.rows
     });
   }
