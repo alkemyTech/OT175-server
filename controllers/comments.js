@@ -7,10 +7,26 @@ const handleError = require('../common/handleError');
 const HttpStatus = require("../common/handleError");
 
 class CommentController {
-  static async updateCommentById(req, res) {
-    const { id } = req.params;
-    const { body } = req.body;
+    static async createComment(req, res){
+        const {body, postId} = req.body;
+        const token = req.headers.authorization.split(" ")[1];
+        if ( !token ) return res.json({msg: 'no token in request'});
+        const {id} = jwt.verify( token, process.env.JWT_SECRET );
+        try{
+            const newComment = await Comment.create({
+                userId: id,
+                body: body,
+                postId: parseInt(postId)
+            });
+            res.status(httpCodes.OK).json(newComment)
+        }catch(err){
+            return handleError.HTTP_ERROR_INTERNAL(err,res);
+        }
+    }
 
+    static async updateCommentById( req, res ) {
+        const { id } = req.params;
+        const { body } = req.body;
     try {
       const token = req.headers.authorization.split(' ')[1];
       if (!token) return res.json({ msg: 'no token in request' });

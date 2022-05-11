@@ -17,15 +17,29 @@ class TestimonialController {
   }
 
   static async index(req,res){
+    const defaultValue = await Testimonial.findAll({ offset: 0, limit: 10 });
+    if( !req.query.page ) return res.status(httpCodes.OK).json({ defaultValue });
     const { page } = req.query;
+
+    let back = parseInt( page ) -1;
+    const next = parseInt( page ) +1
+    if( back === 0) {
+      back = 1;
+    }
     try{
-        let testimonials = await Testimonial.findAll({ offset: parseInt( (page - 1) * 10 ), limit: 10});
-        return res.status(httpCodes.OK).json(testimonials);
+        const testimonials = await Testimonial.findAll({ offset: parseInt( (page - 1) * 10 ), limit: 10});
+        if ( !testimonials.length ) return res.status(httpCodes.NOT_FOUND).json({msg: 'testimonials not found'});
+
+        return res.status(httpCodes.OK).json({
+          back: `${process.env.HOST}/testimonials?page=${ back }`, 
+          next: `${process.env.HOST}/testimonials?page=${ next }`, 
+          testimonials
+        });
     }
     catch (err){
         return handleError.HTTP_ERROR_INTERNAL(err,res);
     }
-  }
+  } 
 
   static async get(req,res) {
     try{
