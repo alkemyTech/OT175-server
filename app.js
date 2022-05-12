@@ -32,6 +32,16 @@ const options = {
       version: '1.3.0',
       description: 'Api de la aceleración de Alkemy'
     },
+    components: {
+      securitySchemes: {
+        jwt: {
+          type: "http",
+          scheme: "bearer",
+          in: "header",
+          bearerFormat: "JWT"
+        },
+      }
+    },
     servers:[
       {
         url: 'http://localhost:3000'
@@ -39,7 +49,8 @@ const options = {
     ],
   },
   apis: ['./routes/*.js',
-        './controllers/*.js']
+        './controllers/*.js',
+        './docs/*.js']
 };
 
 const specs = swaggerJsDoc(options);
