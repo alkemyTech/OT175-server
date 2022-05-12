@@ -38,8 +38,7 @@ const options = {
       }
     ],
   },
-  apis: ['./routes/*.js',
-        './controllers/*.js']
+  apis: ['swagger.yaml']
 };
 
 const specs = swaggerJsDoc(options);
