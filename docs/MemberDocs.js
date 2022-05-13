@@ -40,9 +40,7 @@
  * @swagger
  * /members: 
  *  get:
- *    security:
- *      - jwt: []
- *    summary: return all members like admin
+ *    summary: return all members like admin (need JWT)
  *    tags: [Member]
  *    responses:
  *      200:
@@ -62,9 +60,7 @@
  * @swagger
  * /members: 
  *  post:
- *    security:
- *      - jwt: []  
- *    summary: create a new member like admin
+ *    summary: create a new member like admin (need JWT)
  *    tags: [Member]
  *    requestBody:
  *      required: true
@@ -111,9 +107,7 @@
  * @swagger
  * /members/{id}: 
  *  put:
- *    security:
- *      - jwt: []  
- *    summary: update a member like admin
+ *    summary: update a member like admin (need JWT)
  *    tags: [Member]
  *    parameters:
  *      - in: path
@@ -140,9 +134,7 @@
  * @swagger
  * /members/{id}: 
  *  delete:
- *    security:
- *      - jwt: []  
- *    summary: delete one member like admin
+ *    summary: delete one member like admin (need JWT)
  *    tags: [Member]
  *    parameters:
  *      - in: path
