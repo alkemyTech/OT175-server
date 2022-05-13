@@ -5,7 +5,7 @@ require('dotenv').config();
 async function createJwt(req, res, next){
     const { userData } = res.locals;
     const payload = {
-        userId: userData.id,
+        id: userData.id,
         roleId: userData.roleId
     }
     const token = jwt.sign(payload, process.env.JWT_SECRET);
