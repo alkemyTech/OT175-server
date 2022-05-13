@@ -16,32 +16,80 @@ router.get('/public/:id', Organization.getOrganization);
 
 router.post(
   '/public',
-  restrictUnauthorizedRoles([1]),
-  validateOrganization,
+  [isAdminRole, restrictUnauthorizedRoles(['Admin']), validateOrganization],
   Organization.createOrganization
 );
 
-router.post('/', validateOrganization, Organization.createOrganization);
+router.post(
+  '/',
+  [isAdminRole, validateOrganization],
+  Organization.createOrganization
+);
 
 router.put(
   '/:id',
-  [isAdminRole],
   [
-    check('name', 'name can´t be empty').not().isEmpty().trim().escape().isString().optional({nullable: true}),
-    check('address', 'address can´t be empty').not().isEmpty().trim().escape().optional({nullable: true}),
-    check('address', 'address must be an string').isString().optional({nullable: true}),
-    check('image', 'image must be an url').isURL().trim().isEmpty().optional({nullable: true}),
-    check('phone', 'phone must be a number').not().isEmpty().isNumeric().trim().escape().optional({nullable: true}),
-    check('email', 'email must be an email').isEmail().trim().escape().optional({nullable: true}),
-    check('aboutUsText', 'aboutUsText can´t be empty').not().isEmpty().isString().trim().escape().optional({nullable: true}),
-    check('urlFacebook', 'urlFacebook must be an url').isURL().trim().escape().optional({nullable: true}),
-    check('urlLinkedin', 'urlLinkedin must be an url').isURL().trim().escape().optional({nullable: true}),   
-    check('urlInstagram', ' urlInstagram must be an url').isURL().trim().escape().optional({nullable: true}),
-    fieldsValidate,
+    isAdminRole,
+    check('name', 'name can´t be empty')
+      .not()
+      .isEmpty()
+      .trim()
+      .escape()
+      .isString()
+      .optional({ nullable: true }),
+    check('address', 'address can´t be empty')
+      .not()
+      .isEmpty()
+      .trim()
+      .escape()
+      .optional({ nullable: true }),
+    check('address', 'address must be an string')
+      .isString()
+      .optional({ nullable: true }),
+    check('image', 'image must be an url')
+      .isURL()
+      .trim()
+      .isEmpty()
+      .optional({ nullable: true }),
+    check('phone', 'phone must be a number')
+      .not()
+      .isEmpty()
+      .isNumeric()
+      .trim()
+      .escape()
+      .optional({ nullable: true }),
+    check('email', 'email must be an email')
+      .isEmail()
+      .trim()
+      .escape()
+      .optional({ nullable: true }),
+    check('aboutUsText', 'aboutUsText can´t be empty')
+      .not()
+      .isEmpty()
+      .isString()
+      .trim()
+      .escape()
+      .optional({ nullable: true }),
+    check('urlFacebook', 'urlFacebook must be an url')
+      .isURL()
+      .trim()
+      .escape()
+      .optional({ nullable: true }),
+    check('urlLinkedin', 'urlLinkedin must be an url')
+      .isURL()
+      .trim()
+      .escape()
+      .optional({ nullable: true }),
+    check('urlInstagram', ' urlInstagram must be an url')
+      .isURL()
+      .trim()
+      .escape()
+      .optional({ nullable: true }),
+    fieldsValidate
   ],
   Organization.updateOrganization
 );
 
-router.delete('/:id', Organization.deleteOrganization);
+router.delete('/:id', [isAdminRole], Organization.deleteOrganization);
 
 module.exports = router;

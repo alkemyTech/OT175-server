@@ -9,10 +9,13 @@ const { fieldsValidate } = require('../middlewares/fieldsValidate');
 const validateUrl = require('../helpers/validateUrl');
 
 /* GET members listing. */
-router.get('/', [ isAdminRole ], MemberController.getMembers);
+router.get('/', [isAdminRole], MemberController.getMembers);
 
 /* POST members. */
-router.post('/', [
+router.post(
+  '/',
+  [
+    isAdminRole,
     check('name', 'name can´t be empty').not().isEmpty().trim().escape(),
     check('name', 'name must be string').isString().trim().escape(),
     check('facebookUrl').trim(),
@@ -23,13 +26,18 @@ router.post('/', [
     check('image', 'URL invalid').custom( validateUrl ),
     check('description').trim().escape(),
     fieldsValidate
-], MemberController.postMember);
+  ],
+  MemberController.postMember
+);
 
 /* GET member by ID */
 router.get('/:id', MemberController.getMemberById);
 
 /* PUT member by ID */
-router.put('/:id', [
+router.put(
+  '/:id',
+  [
+    isAdminRole,
     check('name', 'name can´t be empty').not().isEmpty().trim().escape(),
     check('name', 'name must be string').isString().trim().escape(),
     check('facebookUrl').trim(),
@@ -40,9 +48,10 @@ router.put('/:id', [
     check('image', 'URL invalid').custom( validateUrl ),
     check('description').trim().escape(),
     fieldsValidate
-],MemberController.updateMemberById);
+  ],
+  MemberController.updateMemberById
+);
 
-/* DELETEE member by ID */
-router.delete('/:id', MemberController.deleteMemberById);
+router.delete('/:id', [isAdminRole], MemberController.deleteMemberById);
 
 module.exports = router;

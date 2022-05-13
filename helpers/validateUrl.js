@@ -4,4 +4,4 @@ const validateUrl = ( url ) => {
     if ( RegExp ) return RegExp.test(url);
 }
 
-module.exports = validateUrl;
+module.exports = validateUrl; 
