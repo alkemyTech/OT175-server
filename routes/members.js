@@ -6,6 +6,7 @@ const isAdminRole = require('../middlewares/adminAuthentication');
 const MemberController = require('../controllers/members');
 
 const { fieldsValidate } = require('../middlewares/fieldsValidate');
+const validateUrl = require('../helpers/validateUrl');
 
 /* GET members listing. */
 router.get('/', [isAdminRole], MemberController.getMembers);
@@ -22,6 +23,7 @@ router.post(
     check('linkedinUrl').trim(),
     check('image', 'image can´t be empty').not().isEmpty().trim(),
     check('image', 'image must be string').isString().trim(),
+    check('image', 'URL invalid').custom( validateUrl ),
     check('description').trim().escape(),
     fieldsValidate
   ],
@@ -43,6 +45,7 @@ router.put(
     check('linkedinUrl').trim(),
     check('image', 'image can´t be empty').not().isEmpty().trim(),
     check('image', 'image must be string').isString().trim(),
+    check('image', 'URL invalid').custom( validateUrl ),
     check('description').trim().escape(),
     fieldsValidate
   ],
