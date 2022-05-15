@@ -1,26 +1,10 @@
-require('dotenv').config();
-process.env.NODE_ENV = 'test';
-const chai = require('chai');
-const { expect, use } = require('chai');
-const chaiHttp = require('chai-http');
-const app = require('../app');
+const { expect } = require('chai');
 const sinon = require("sinon");
-chai.use(chaiHttp);
 const models = require('../models');
-const { request } = require('express');
-const { token } = require('morgan');
-const { Member, User } = models;
+const { Member } = models;
+const MemberController = require('../controllers/members');
 
 describe('Members workflow tests', () => {
-    const user = {
-        firstName: 'Pedro',
-        lastName: 'Juarez',
-        email: 'pedro@test.com',
-        image: 'https://res.cloudinary.com/dggzhar2j/image/upload/v1649968636/Marita_Gomez_japull.jpg',
-        password: "test123",
-        roleId: 1,
-    }
-
     const memberOne = {
         id: 1,
         name: 'Juan Pablo',
@@ -40,154 +24,162 @@ describe('Members workflow tests', () => {
         image: 'https://www.imagenes.com',
         description: 'prueba'
     }
-    describe('/members', (done) => {
 
-        it('POST /members: should show errors to create member with empty data', async() => {
-            sinon.stub(User, 'create').returns(user);
-            chai.request(app)
-            .post('/auth/register')
-            .set('Content-Type', 'application/json')
-            .set('Accept', 'application/json')
-            .send(user)
-            .end( (err, res) => {
-                chai.request(app)
-                .post('/auth/login')
-                .send({ 'email': user.email, 'password': user.password})
-                .end( (err, res) => {
-                    const token = res.body.token
-                    chai.request(app)
-                    .post('/members')
-                    .set('Content-Type', 'application/json')
-                    .set('Accept', 'application/json')
-                    .auth(token, {type: 'bearer'})
-                    .end( (err, res) => {
-                    expect(res.status).to.be.equal(400);
-                    expect(res.body.errors).to.be.a('array');
-                    expect(res.body.length).to.be.eql(2);
-                    done();
-                    });
-                });
-            }); 
+    describe('/members', () => {
+        let status, json, res;
+
+        beforeEach(() => {
+            status = sinon.stub();
+            json = sinon.spy();
+            res = { json, status };
+            status.returns(res);
+        });
+        
+        afterEach(()=> { 
+            sinon.verifyAndRestore(); 
         });
 
         it('POST /member: should add a new member in DB', async() => {
-            chai.request(app)
-            .post('/auth/login')
-            .send({ 'email': user.email, 'password': user.password})
-            .end( (err, res) => {
+            const req = {
+                body: {
+                    name: 'Juan Pablo',
+                    facebookUrl: 'facebook.com/pablo',
+                    instagramUrl: 'instagran.com/pablo',
+                    linkedinUrl: 'linkedin/pablo',
+                    image: 'https://www.imagenes.com',
+                    description: 'prueba'
+                }
+            };
 
-                sinon.stub(Member, 'create').returns(memberOne);
-                chai.request(app)
-                .post('/members')
-                .set('Content-Type', 'application/json')
-                .set('Accept', 'application/json')
-                .auth(token, {type: 'bearer'})
-                .send(memberOne)
-                .end( (err, res) => {
-                    const actualVal = res.body.msg;
-                    expect(res.status).to.be.equal(200);
-                    expect(actualVal).to.be.equal('Member created');
-                    done();
-                });
-            });
-        });
-
-        it('GET /members/id: should show one member', async() => {
-            chai.request(app)
-            .post('/auth/login')
-            .send({ 'email': user.email, 'password': user.password})
-            .end( (err, res) => {
-                sinon.stub(Member, 'findOne').returns(memberTwo);           
-                chai.request(app)
-                .get(`/members/${memberTwo.id}`)
-                .set('Content-Type', 'application/json')
-                .auth(token, {type: 'bearer'})
-                .end( (err, res) => {
-                    const actualVal = res.body.msg;
-                    expect(res.status).to.be.equal(200);
-                    
-                });
-            });
+            const stub = sinon.stub(Member, 'create').returns(memberOne);
+            await MemberController.postMember( req, res );
+            expect(stub.calledOnce).to.be.true;
+            expect(status.calledOnce).to.be.true;
+            expect(status.args[0][0]).to.equal(200);
+            expect(json.calledOnce).to.be.true;
+            expect(json.args[0][0].msg).to.equal('Member created');
         });
 
         it('GET /members/id: should show error, member not found', async() => {
-            chai.request(app)
-            .post('/auth/login')
-            .send({ 'email': user.email, 'password': user.password})
-            .end( (err, res) => {
-                sinon.stub(Member, 'findOne').returns(null);
-                chai.request(app)
-                .get(`/members/${memberTwo.id}`)
-                .set('Content-Type', 'application/json')
-                .auth(token, {type: 'bearer'})
-                .end( (err, res) => {
-                    const actualVal = res.body.msg;
-                    expect(res.status).to.be.equal(404);
-                    expect(actualVal).to.be.equal('There are no registered member');
-                });           
-            });
+            const req = { params: { id: memberOne.id } };
+            const stub = sinon.stub(Member, 'findOne').returns(null);
+            await MemberController.getMemberById( req, res );
+            expect(stub.calledOnce).to.be.true;
+            expect(status.calledOnce).to.be.true;
+            expect(status.args[0][0]).to.equal(404);
+            expect(json.calledOnce).to.be.true;
+            expect(json.args[0][0].msg).to.equal('There are no registered member');
         });
 
-        it('PUT /members/id: should show error, member not found', async() => {
-            chai.request(app)
-            .post('/auth/login')
-            .send({ 'email': user.email, 'password': user.password})
-            .end( (err, res) => {
-                sinon.stub(Member, 'findOne').returns(null);
-                chai.request(app)
-                .put(`/members/${memberOne.id}`)
-                .set('Content-Type', 'application/json')
-                .set('Accept', 'application/json')
-                .auth(token, {type: 'bearer'})
-                .send(memberTwo)
-                .end( (err, res) => {
-                    const actualVal = res.body.msg;
-                    expect(res.status).to.be.equal(404);
-                    expect(actualVal).to.be.equal('There is no registered member');
-                    done();
-                });
-            });  
+        it('GET /members/id: should show one member', async() => {
+            const req = { params: { id: memberOne.id } };
+            const stub = sinon.stub(Member, 'findOne').returns(memberOne);
+            await MemberController.getMemberById( req, res );
+            expect(stub.calledOnce).to.be.true;
+            expect(status.calledOnce).to.be.true;
+            expect(status.args[0][0]).to.equal(200);
+            expect(json.calledOnce).to.be.true;
+            expect(json.args[0][0].member).to.equal(memberOne);
         });
 
         it ('GET /member: should show error by members empty', async() => {
-            chai.request(app)
-            .post('/auth/login')
-            .send({ 'email': user.email, 'password': user.password})
-            .end( (err, res) => {
-                sinon.stub(Member, 'findAll').returns(null);
-                chai.request(app)
-                .get('/members')
-                .set('Content-Type', 'application/json')
-                .set('Accept', 'application/json')
-                .auth(token, {type: 'bearer'})
-                .end( (err, res) => {
-                    const actualVal = res.body.msg;
-                    expect(res.status).to.be.equal(404);
-                    expect(actualVal).to.be.equal('There is no members to show');
-                });
-            });
+            const req = { query: { page: 1 } };
+            const stub = sinon.stub(Member, 'findAll').returns([]);
+            await MemberController.getMembers( req, res );
+            expect(stub.calledOnce).to.be.true;
+            expect(status.calledOnce).to.be.true;
+            expect(status.args[0][0]).to.equal(404);
+            expect(json.calledOnce).to.be.true;
+            expect(json.args[0][0].msg).to.equal('There is no members to show');
         });
 
         it('GET /members: should get members', async() => {
-            chai.request(app)
-            .post('/auth/login')
-            .send({ 'email': user.email, 'password': user.password})
-            .end( (err, res) => {
-                sinon.stub(Member, 'create').set(memberOne);
-                sinon.stub(Member, 'create').set(memberTwo);
-                chai.request(app)
-                .get('/members')
-                .set('Content-Type', 'application/json')
-                .set('Accept', 'application/json')
-                .auth(token, {type: 'bearer'})
-                .end( (err, res) => {
-                    expect(res.status).to.be.equal(200);
-                    expect(res.body.members).to.be.a('array');
-                    expect(res.body.length).to.be.eql(2);
-                });
-            }) 
+            const req = { query: { page: 1 } };
+            const stub = sinon.stub(Member, 'findAll').returns([ memberOne, memberTwo ]);
+            await MemberController.getMembers( req, res );
+            expect(stub.calledOnce).to.be.true;
+            expect(status.calledOnce).to.be.true;
+            expect(status.args[0][0]).to.equal(200);
+            expect(json.calledOnce).to.be.true;
+            expect(json.args[0][0].members).to.length(2);
+        });
+
+        it('PUT /members/id: should show error,There is no registered member', async() => {
+            const req = 
+                { 
+                    params: 
+                        { 
+                            id: memberOne.id 
+                        },
+                    body: {
+                        name: 'Juan Pablo',
+                        facebookUrl: 'facebook.com/pablo',
+                        instagramUrl: 'instagran.com/pablo',
+                        linkedinUrl: 'linkedin/pablo',
+                        image: 'https://www.imagenes.com',
+                        description: 'prueba'
+                    }
+                };
+            const stub = sinon.stub(Member, 'findOne').returns(null);
+            await MemberController.updateMemberById(req, res);
+            expect(stub.calledOnce).to.be.true;
+            expect(status.calledOnce).to.be.true;
+            expect(status.args[0][0]).to.equal(404);
+            expect(json.calledOnce).to.be.true;
+            expect(json.args[0][0].msg).to.equal('There is no registered member');
+        });
+
+        it('PUT /members/id: should update a member', async() => {
+            const req = 
+                { 
+                    params: 
+                        { 
+                            id: memberOne.id 
+                        },
+                    body: {
+                        name: 'Juan Pablo',
+                        facebookUrl: 'facebook.com/pablo',
+                        instagramUrl: 'instagran.com/pablo',
+                        linkedinUrl: 'linkedin/pablo',
+                        image: 'https://www.imagenes.com',
+                        description: 'prueba'
+                    }
+                };
+            
+            const fake = sinon.fake()
+            memberOne.update = fake;
+            const stub = sinon.stub(Member, 'findOne').returns(memberOne);
+            await MemberController.updateMemberById(req, res);
+            expect(stub.calledOnce).to.be.true;
+            expect(status.calledOnce).to.be.true;
+            expect(status.args[0][0]).to.equal(200);
+            expect(json.calledOnce).to.be.true;
+            expect(json.args[0][0].msg).to.equal('Member updated');
+        });
+
+        it('DELETE /members/id: should show error, member not exist', async() => {
+            const req = { params: { id: memberOne.id } };
+            const stub = sinon.stub(Member, 'findOne').returns(null);
+            await MemberController.deleteMemberById(req, res);
+            expect(stub.calledOnce).to.be.true;
+            expect(status.calledOnce).to.be.true;
+            expect(status.args[0][0]).to.equal(404);
+            expect(json.calledOnce).to.be.true;
+            expect(json.args[0][0].msg).to.equal('the member you are trying to register does not exist');
+        });
+
+        it('DELETE /members/id, should delete a member', async() => {
+            const req = { params: { id: memberOne.id } };
+            const fake = sinon.fake();
+            memberOne.destroy = fake;
+            const stub = sinon.stub(Member, 'findOne').returns(memberOne);
+            await MemberController.deleteMemberById(req, res);
+            expect(stub.calledOnce).to.be.true;
+            expect(status.calledOnce).to.be.true;
+            expect(status.args[0][0]).to.equal(200);
+            expect(json.calledOnce).to.be.true;
+            expect(json.args[0][0].msg).to.equal('Member deleted');
         });
 
     });
-
 });
