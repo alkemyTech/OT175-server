@@ -1,7 +1,8 @@
 const { response } = require("express");
 const HttpStatus = require("../common/handleError");
 const models = require("../models");
-const { Organization } = models;
+const slides = require("../models/slides");
+const { Organization, Slides } = models;
 
 class OrganizationController {
   constructor() {}
@@ -19,10 +20,15 @@ class OrganizationController {
   async getOrganization(req, res = response) {
     const { id } = req.params;
     let organization;
+    let slides;
     try {
       organization = await Organization.findOne({
         where: { id: id },
         attributes: ["name", "phone", "email", "address"],
+      });
+      slides = await Slides.findAll({
+        where: {organizationId: id},
+        attributes: ["id", "text", "imageUrl", "order"]
       });
       if (!organization) {
         return HttpStatus.HTTP_BAD_REQUEST(res);
@@ -30,7 +36,10 @@ class OrganizationController {
     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error);
     }
-    return HttpStatus.HTTP_OK(res, organization);
+    slides.sort((a, b)=>{
+      return a.order - b.order
+    });
+    return HttpStatus.HTTP_OK(res, {organization, slides});
   }
 
   async updateOrganization(req, res = response) {
