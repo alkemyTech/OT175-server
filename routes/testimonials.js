@@ -35,6 +35,17 @@ router.patch(
   Testimonials.update
 );
 
+router.put('/:id',
+  isAdminRole, [
+    body('name', 'name must be a string').optional({ nullable: true }).isString(),
+    body('image', 'must be a URL').optional({ nullable: true }).isURL(),
+    body('content', 'content must be a string').optional({ nullable: true }).isString(),
+  ],
+  fieldsValidate,
+  Testimonials.update
+);
+
+
 router.delete('/:id', [isAdminRole], Testimonials.delete);
 
 module.exports = router;

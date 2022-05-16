@@ -5,7 +5,11 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
+<<<<<<< HEAD
     "test": "mocha './test/*.test.js' --recursive --exit"
+=======
+    "test": "mocha --recursive --exit"
+>>>>>>> ea53b65e4bba2117dd160eac3e79143fe3abffd0
   },
   "dependencies": {
     "@sendgrid/mail": "^7.6.2",
@@ -30,7 +34,10 @@
   },
   "devDependencies": {
     "chai": "^4.3.6",
+<<<<<<< HEAD
     "chai-http": "^4.3.0",
+=======
+>>>>>>> ea53b65e4bba2117dd160eac3e79143fe3abffd0
     "mocha": "^10.0.0",
     "nodemon": "^2.0.15",
     "sequelize-cli": "^6.2.0",
