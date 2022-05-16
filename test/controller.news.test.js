@@ -40,7 +40,7 @@ describe('News Controller test', function () {
       const stub = sinon.stub(News, 'create').returns(stubValue);
 
       const req = {
-        body: stubValue
+        body: body
       };
 
       await newsController.createNews(req, res);
