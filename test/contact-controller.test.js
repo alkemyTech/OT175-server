@@ -72,6 +72,5 @@ describe('Contacts workflow tests', () => {
             expect(json.calledOnce).to.be.true;
             expect(json.args[0][0].msg).to.equal('Contact created');
         });
-
     });
 });
