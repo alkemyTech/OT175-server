@@ -16,7 +16,7 @@ describe('News Controller test', function () {
     status = sinon.stub();
     json = sinon.spy();
     res = { json, status };
-    status.returns(res);
+    //status.returns(res);
 
     const body = {
       name: 'news name 01',
@@ -44,6 +44,7 @@ describe('News Controller test', function () {
       };
 
       await newsController.createNews(req, res);
+
       expect(stub.calledOnce).to.be.true;
 
       expect(status.calledOnce).to.be.true;
