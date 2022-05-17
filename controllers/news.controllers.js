@@ -1,6 +1,7 @@
 const models = require('./../models');
-const { News } = models;
+const { News, Category } = models;
 const HttpStatus = require('../common/handleError');
+const httpCodes = require('../common/httpCodes');
 
 class NewsCtrl {
   async createNews(req, res) {
@@ -21,18 +22,19 @@ class NewsCtrl {
     let initialRecord = page * quantityOfRecordsPerPage;
 
     try {
-      let articles = await News.findAndCountAll({
-        where: { deletedAt: null },
+      let articles = await News.findAll({
 
-        offset: initialRecord,
         limit: quantityOfRecordsPerPage,
+        offset: initialRecord,
 
-        include: 'Category'
+        include: [{
+          model: Category
+        }]
       });
       if (articles.length === 0) {
         return res
-          .status(404)
-          .send('News and/or the page requested has no records');
+          .status(httpCodes.NOT_FOUND)
+          .json({msg:'News and/or the page requested has no records'});
       }
 
       let previousPage = page === 0 ? 0 : page - 1;
@@ -47,9 +49,10 @@ class NewsCtrl {
       let port = process.env.PORT ? process.env.PORT : '3000';
       let host = process.env.HOST ? process.env.HOST : 'localhost:' + port;
 
-      return res.status(200).json({
+      return res.status(httpCodes.OK).json({
         urlPreviousPage: host + req.baseUrl + '?page=' + previousPage,
         records: articles.rows,
+        articles,
         urlNextPage: host + req.baseUrl + '?page=' + nextPage
       });
     } catch (err) {
