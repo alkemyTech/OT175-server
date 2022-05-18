@@ -11,7 +11,7 @@ class UserController {
   static async getUsers(req, res, next) {
     try {
       const query = await User.findAll();
-      res.json(query);
+      res.status(200).json(query);
     } catch (error) {
       next(error);
     }
@@ -21,8 +21,8 @@ class UserController {
     try {
       const userQuery = await User.findByPk(parseInt(req.params.id));
       userQuery
-        ? res.json(userQuery)
-        : res.json({ msge: 'The query got no results. Im sory' });
+        ? res.status(200).json(userQuery)
+        : res.status(404).json({ msge: 'The query got no results. Im sory' });
     } catch (error) {
       next(error);
     }
@@ -50,7 +50,7 @@ class UserController {
       });
 
       if (!isValidOperation || !adminQuery)
-        return res.status(400).send({ error: 'Invalid update!' });
+        return res.status(400).json({ error: 'Invalid update!' });
       else if (isValidOperation) {
         const query = await User.update(req.body, {
           where: {
@@ -58,7 +58,7 @@ class UserController {
           },
         });
 
-        res.json(query);
+        res.status(200).json(query);
       }
     } catch (error) {
       next(error);
@@ -74,18 +74,22 @@ class UserController {
       });
 
       if (adminQuery) {
-        const data = await User.destroy({
-          where: {
-            id: req.params.id,
-          },
-        });
-        if (data)
-          return res.json({ msge: 'The user has been successfully deleted' });
-        else
-          return res
-            .status(404)
-            .json({ msge: 'An error has occured. The user doesnt exist' });
-      }
+        try{
+          const data = await User.destroy({
+            where: {
+              id: req.params.id,
+            },
+          });
+          res.status(200)
+          .json({ msge: 'The user has been successfully deleted' });
+        }catch(err)
+        {
+          res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+          .json(err)
+        };
+      }else
+        res.status(404)
+          .json({ msge: 'An error has occured. The user doesnt exist' });
     } catch (error) {
       next(error);
     }
@@ -105,7 +109,7 @@ class UserController {
     } catch (error) {
       return res
         .status(HttpStatusCodes.NOT_FOUND)
-        .send({ status: error.message });
+        .json({ status: error.message });
     }
 
     let body = req.body;
@@ -129,7 +133,7 @@ class UserController {
         .send({ status: error.message });
     }
 
-    return res.send({ 'Updated records: ': result });
+    return res.status(200).json(result);
   }
 }
 
