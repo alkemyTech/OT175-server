@@ -57,12 +57,12 @@ describe('Testing users  ...', ()=>{
     beforeEach(() => {
 
     });
-    
-    afterEach(()=> { 
-        sinon.verifyAndRestore(); 
+
+    afterEach(()=> {
+        sinon.verifyAndRestore();
     });
 
-        describe('Testing users (success cases)...', ()=>{
+    describe('Testing users (success cases)...', ()=>{
 
         it('GET/users ... ', (done)=>{
             let stub = sinon.stub(UserController, 'getUsers');

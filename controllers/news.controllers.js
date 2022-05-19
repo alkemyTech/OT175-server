@@ -3,7 +3,7 @@ const { News } = models;
 const HttpStatus = require('../common/handleError');
 
 class NewsCtrl {
-  async createNews(req, res) {
+  static async createNews(req, res) {
     const { name, content, image, categoryId } = req.body;
     try {
       const news = await News.create({ name, content, image, categoryId });
@@ -13,7 +13,7 @@ class NewsCtrl {
     }
   }
 
-  async getAll(req, res) {
+  static async getAll(req, res) {
     let { page } = req.query;
     page = parseInt(page);
 
@@ -29,7 +29,7 @@ class NewsCtrl {
 
         include: 'Category'
       });
-      if (articles.length === 0) {
+      if (!articles) {
         return res
           .status(404)
           .send('News and/or the page requested has no records');
@@ -53,7 +53,7 @@ class NewsCtrl {
         urlNextPage: host + req.baseUrl + '?page=' + nextPage
       });
     } catch (err) {
-      console.error(err);
+      //console.error(err);
       return res.status(500).send('internal server error. could not get News');
     }
   }

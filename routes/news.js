@@ -12,7 +12,7 @@ const validateUrl = require('../helpers/validateUrl');
 
 router
   .route('/')
-  .get(controller.getAll)
+  .get(NewsCtrl.getAll)
   .post(
     [
       isAdminRole,
@@ -35,7 +35,7 @@ router
         .withMessage('amount is not int or amount is less than zero'),
       fieldsValidate
     ],
-    controller.createNews
+   NewsCtrl.createNews
   );
 router
   .route('/:id')

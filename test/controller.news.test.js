@@ -43,7 +43,7 @@ describe('News Controller test', function () {
         body: body
       };
 
-      await newsController.createNews(req, res);
+      await NewsController.createNews(req, res);
 
       expect(stub.calledOnce).to.be.true;
 

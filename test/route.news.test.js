@@ -1,26 +1,42 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const sinon = require('sinon');
-const expect = chai.expect;
-
-chai.use(chaiHttp);
+const request = require('supertest');
 
 const app = require('../app');
+const models = require("./../models");
 
-const NewsController = require('../controllers/news.controllers');
+const expect = chai.expect;
+const { News } = models;
+chai.use(chaiHttp);
+
+const EMPTY_PAGE_LOCAL = 'localhost:3000/news?page=NaN'; // wrong response
 
 describe('News route test', function () {
   describe('Should call news controller, method getAll', function () {
-    it('should call stubed function at least once', async function () {
-      const newsController = new NewsController();
 
-      const stub = sinon.stub(newsController, 'getAll').returns([]);
+    const sandbox = sinon.createSandbox();
+    afterEach( () => {
+      sinon.restore();
+      sandbox.restore();
+    });
 
-      await chai.request(app).get('/news');
+    it.only('should call stubbed function at with empty response', async function () {
+      // Arrange
+      News.findAndCountAll = sandbox
+          .stub()
+          .returns(Promise.resolve([]))
 
-      console.log('stub.calledOnce ', stub.calledOnce);
+      // Act
+      const response = await request(app)
+          .get("/news")
+          .expect(200)
+      const news = response.body;
 
-      expect(stub.calledOnce).to.be.true;
-    }); //end it;
+      // Assert
+      expect(news).to.be.an("object");
+      expect(news.urlPreviousPage).to.be.equal(EMPTY_PAGE_LOCAL);
+      expect(news.urlNextPage).to.be.equal(EMPTY_PAGE_LOCAL);
+    });
   });
 });
