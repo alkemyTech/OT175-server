@@ -1,64 +1,66 @@
-const { response } = require("express");
-const HttpStatus = require("../common/handleError");
-const models = require("../models");
-const slides = require("../models/slides");
+const { response } = require('express');
+const HttpStatus = require('../common/handleError');
+const httpCodes = require('../common/httpCodes');
+const models = require('../models');
+const slides = require('../models/slides');
 const { Organization, Slides } = models;
 
 class OrganizationController {
-  constructor() {}
-
-  async getOrganizations(req, res) {
+  static async getOrganizations(req, res) {
     let organizations;
     try {
       organizations = await Organization.findAll();
     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
     }
-    return HttpStatus.HTTP_OK(res, organizations);
+    if (!organizations)
+      return res
+        .status(httpCodes.NOT_FOUND)
+        .json({ msg: "There aren't registered organizations" });
+     res.status(httpCodes.OK).json({organizations});
   }
 
-  async getOrganization(req, res = response) {
+  static async getOrganization(req, res = response) {
     const { id } = req.params;
     let organization;
     let slides;
     try {
       organization = await Organization.findOne({
         where: { id: id },
-        attributes: ["name", "phone", "email", "address"],
+        attributes: ['name', 'phone', 'email', 'address'],
       });
       slides = await Slides.findAll({
-        where: {organizationId: id},
-        attributes: ["id", "text", "imageUrl", "order"]
+        where: { organizationId: id },
+        attributes: ['id', 'text', 'imageUrl', 'order'],
       });
-      if (!organization) {
-        return HttpStatus.HTTP_BAD_REQUEST(res);
-      }
+      if (!organization)
+        return res
+          .status(httpCodes.NOT_FOUND)
+          .json({ msg: "There aren't registered organization" });
     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error);
     }
-    slides.sort((a, b)=>{
-      return a.order - b.order
+    slides.sort((a, b) => {
+      return a.order - b.order;
     });
-    return HttpStatus.HTTP_OK(res, {organization, slides});
+    res.status(httpCodes.OK).json({ organization, slides });
   }
 
-  async updateOrganization(req, res = response) {
+  static async updateOrganization(req, res = response) {
     const { id } = req.params;
     const body = req.body;
-   
+
     try {
       await Organization.update(body, {
         where: { id },
       });
-
-     } catch (error) {
+    } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
     }
-    return HttpStatus.HTTP_OK(res, "successed update");
+    res.status(httpCodes.OK).json({ msg: 'Organization updated' });
   }
 
-  async createOrganization(req, res = response) {
-    
+  static async createOrganization(req, res = response) {
     const { createdAt, updatedAt, ...body } = req.body;
     const data = {
       ...body,
@@ -72,19 +74,21 @@ class OrganizationController {
     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
     }
-    return HttpStatus.HTTP_CREATE(res, organization);
+    res.status(httpCodes.CREATED).json({ msg: 'Organization created' });
   }
 
-  async deleteOrganization(req, res = response) {
+  static async deleteOrganization(req, res = response) {
     const { id } = req.params;
     let organizationResponse;
     try {
       organizationResponse = await Organization.findByPk(id);
 
       if (!organizationResponse) {
-        return HttpStatus.HTTP_BAD_REQUEST(res);
+        return res.status(httpCodes.NOT_FOUND).json({
+          msg: 'the organization you are trying to register does not exist',
+        });
       }
-      const organization = await Organization.destroy({
+      await Organization.destroy({
         where: {
           id: id,
         },
@@ -92,7 +96,7 @@ class OrganizationController {
     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
     }
-    return HttpStatus.HTTP_OK(res, organizationResponse);
+    return res.status(httpCodes.OK).json({ msg: 'Organization deleted' });
   }
 }
 

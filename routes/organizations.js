@@ -1,7 +1,6 @@
 const { Router } = require('express');
 
 const OrganizationController = require('../controllers/organizations.controller');
-const Organization = new OrganizationController();
 const isAdminRole = require('../middlewares/adminAuthentication');
 const { validateOrganization } = require('../middlewares/validators');
 const restrictUnauthorizedRoles = require('../middlewares/userAuth');
@@ -10,20 +9,20 @@ const { check } = require('express-validator');
 
 const router = Router();
 
-router.get('/', Organization.getOrganizations);
+router.get('/', OrganizationController.getOrganizations);
 
-router.get('/public/:id', Organization.getOrganization);
+router.get('/public/:id', OrganizationController.getOrganization);
 
 router.post(
   '/public',
   [isAdminRole, restrictUnauthorizedRoles(['Admin']), validateOrganization],
-  Organization.createOrganization
+  OrganizationController.createOrganization
 );
 
 router.post(
   '/',
   [isAdminRole, validateOrganization],
-  Organization.createOrganization
+  OrganizationController.createOrganization
 );
 
 router.put(
@@ -87,9 +86,9 @@ router.put(
       .optional({ nullable: true }),
     fieldsValidate
   ],
-  Organization.updateOrganization
+  OrganizationController.updateOrganization
 );
 
-router.delete('/:id', [isAdminRole], Organization.deleteOrganization);
+router.delete('/:id', [isAdminRole], OrganizationController.deleteOrganization);
 
 module.exports = router;
