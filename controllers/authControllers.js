@@ -51,18 +51,18 @@ class AuthControllers {
 
   static async getDataUser(req, res) {
     try {
-    const token = req.headers.authorization.split(" ")[1];
-    const jwtDecoded = jwt.verify(token, process.env.JWT_SECRET);
-    if(jwtDecoded){
-      const user = await User.findOne({
-        where: { id: jwtDecoded.id },
-        include: [
-          {
-            model: Role,
-            as: "role",
-          },
-        ],
-      });
+      const token = req.headers.authorization.split(" ")[1];
+      const jwtDecoded = jwt.verify(token, process.env.JWT_SECRET);
+      if(jwtDecoded){
+        const user = await User.findOne({
+          where: { id: jwtDecoded.id },
+          include: [
+            {
+              model: Role,
+              as: "role",
+            },
+          ],
+        });
       res.status(200).json(user);
     }
     } catch (err) {
