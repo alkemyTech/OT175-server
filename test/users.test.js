@@ -58,12 +58,12 @@ describe('Testing users  ...', ()=>{
         res = { json, status };
         status.returns(res);
     });
-    
-    afterEach(()=> { 
-        sinon.verifyAndRestore(); 
+
+    afterEach(()=> {
+        sinon.verifyAndRestore();
     });
 
-        describe('Testing users (success cases)...', ()=>{
+    describe('Testing users (success cases)...', ()=>{
 
         it('GET/users ... ', async()=>{
             let stub = sinon.stub(User, 'findAll').returns(testUserList);
