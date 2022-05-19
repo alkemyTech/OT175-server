@@ -1,24 +1,25 @@
 const router = require('express').Router();
 const AuthControllers = require('../controllers/authControllers')
-const { body, validationResult } = require('express-validator'); 
-const createJwt = require('../middlewares/jwtCreation')
+const { check } = require('express-validator'); 
+const { fieldsValidate } = require('../middlewares/fieldsValidate');
 
 router.post(
     '/register', 
-    body('firstName', 'Please enter a valid First Name').isAlpha(), 
-    body('lastName', 'Please enter a valid Last Name').isAlpha(), 
-    body('email', 'Please enter a valid mail').isEmail(), 
-    body('image', 'Please enter the url of your photo').isURL(), 
-    body('password', 'Please enter a valid password').isAlphanumeric(),
-    AuthControllers.signin,
-    createJwt
+    check('firstName', 'Please enter a valid First Name').isString().not().isEmpty(), 
+    check('lastName', 'Please enter a valid Last Name').isString().not().isEmpty(), 
+    check('email', 'Please enter a valid mail').isEmail().not().isEmpty(), 
+    check('image', 'Please enter the url of your photo').isURL().not().isEmpty(), 
+    check('password', 'Please enter a valid password').isAlphanumeric().not().isEmpty(),
+    fieldsValidate,
+    AuthControllers.signin
 );
 
 router.get('/me', AuthControllers.getDataUser);
 
 router.post("/login", 
-    body("email").isEmail(), 
-    body("password").isLength({ min: 1 }), 
+    check("email",'Please enter a valid mail').isEmail().not().isEmpty(), 
+    check("password", 'Please enter a valid password').isLength({ min: 1 }).not().isEmpty(),
+    fieldsValidate, 
     AuthControllers.login    
 );
 

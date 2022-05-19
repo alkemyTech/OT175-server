@@ -1,15 +1,12 @@
 require('dotenv').config();
 const chai= require('chai');
-const chaiHttp = require('chai-http');
 const sinon = require('sinon')
 
 const expect = chai.expect;
 
-const app = require('../app');
-const UserController = require('../controllers/userControllers')
-
-
-chai.use(chaiHttp)
+const UserController = require('../controllers/userControllers');
+const models = require('../models');
+const { User } = models;
 
 describe('Testing users  ...', ()=>{
     const testUserList=[
@@ -52,10 +49,14 @@ describe('Testing users  ...', ()=>{
     ];
 
     const rndId = Math.floor(Math.random() * testUserList.length);
-    const invalidId = testUserList.length + 1
-
+    const invalidId = testUserList.length + 1;
+    let req = {};
+    let status, json, res ;
     beforeEach(() => {
-
+        status = sinon.stub();
+        json = sinon.spy();
+        res = { json, status };
+        status.returns(res);
     });
 
     afterEach(()=> {
@@ -64,158 +65,162 @@ describe('Testing users  ...', ()=>{
 
     describe('Testing users (success cases)...', ()=>{
 
-        it('GET/users ... ', (done)=>{
-            let stub = sinon.stub(UserController, 'getUsers');
-            stub.returns(testUserList);
-            let fn = UserController.getUsers()
-            // expect(status.args[0][0]).to.equal(200);
-            expect(fn).to.be.an('array');
-            for(each of fn) {
-                expect(each).to.have.all.keys(
-                    `id`,
-                    `firstName`,
-                    `lastName`,
-                    `email`,
-                    `image`,
-                    `password`,
-                    `roleId`,
-                    `deletedAt`,
-                    `createdAt`,
-                    `updatedAt`);
-            }
-            done();
+        it('GET/users ... ', async()=>{
+            let stub = sinon.stub(User, 'findAll').returns(testUserList);
+            await UserController.getUsers(req, res);
+
+            expect(stub.calledOnce).to.be.true;
+            expect(status.calledWith(200)).to.be.true;
+            expect(json.calledWith(testUserList)).to.be.true;
         });
-        it(`GET/users/${rndId} ... `, (done)=>{
-            let stub = sinon.stub(UserController, 'getUserById');
-            stub.withArgs(rndId).returns(testUserList[rndId]);
-            let fn = UserController.getUserById(rndId)
-            // expect(res.status).to.be.equal(200);
-            expect(fn).to.be.an('object');
-            expect(fn).to.have.all.keys(
-                `id`,
-                `firstName`,
-                `lastName`,
-                `email`,
-                `image`,
-                `password`,
-                `roleId`,
-                `deletedAt`,
-                `createdAt`,
-                `updatedAt`);
-            done();
+        it(`GET/users/${rndId} ... `, async()=>{
+            req.params ={id: rndId} 
+            let stub = sinon.stub(User, 'findByPk')
+                .withArgs(rndId)
+                .returns(testUserList[rndId]);
+            await UserController.getUserById(req, res);
+
+            expect(stub.calledOnce).to.be.true;
+            expect(status.calledWith(200)).to.be.true;
+            expect(json.calledWith(testUserList[rndId])).to.be.true;
         });
-        it(`PUT/users/${rndId} ... `, (done)=>{
-            let stub = sinon.stub(UserController, 'updateUser');
-            let req = {
-                'firstName':"lala",
-                'lastName':"lastname",
-                'email': "email@gmail.com",
-                'photo': "img.com",
-                'password': "1234",
-                'roleId': 1,
-            }
-            stub.withArgs(rndId, req).returns([1]);
-            let fn = UserController.updateUser(rndId, req)
-            // expect(res.status).to.be.equal(200);
-            expect(fn).to.be.an('array')
-            expect(fn).to.contain(1)
-            done();
+        it(`PUT/users/${rndId} ... `, async()=>{
+            req = {
+                params: {id: rndId},
+                body:{
+                    'firstName':"lala",
+                    'lastName':"lastname",
+                    'email': "email@gmail.com",
+                    'photo': "img.com",
+                    'password': "1234",
+                    'roleId': 1,
+                }
+            };
+            let stub = sinon.stub(User, 'update').returns([1]);
+            let stubFinder = sinon.stub(User, 'findAll').returns(testUserList[rndId]);
+            await UserController.updateUser(req, res)
+            expect(stub.calledOnce).to.be.true;
+            expect(stubFinder.calledOnce).to.be.true;
+            expect(status.calledWith(200)).to.be.true;
+            expect(json.calledWith([1])).to.be.true;
         });
-        it('patch user ... ', (done)=>{
-            let stub = sinon.stub(UserController, 'updateUser');
-            let req = {
-                'firstName':"lala",
-                'lastName':"lastname",
-                'email': "email@gmail.com",
-                'photo': "img.com",
-                'password': "1234",
-                'roleId': 1,
-            }
-            stub.withArgs(rndId, req).returns({'Updated records: ':  1 });
-            let fn = UserController.updateUser(rndId, req);
-            // expect(res.status).to.be.equal(200);
-            expect(fn).to.be.an('object');
-            expect(fn).to.have.property('Updated records: ', 1)
-            done();
+        it('patch user ... ', async()=>{
+            req = {
+                params: {id: rndId},
+                body:{
+                    'firstName':"lala",
+                    'lastName':"lastname",
+                    'email': "email@gmail.com",
+                    'photo': "img.com",
+                    'password': "1234",
+                    'roleId': 1,
+                }
+            };
+            let stub = sinon.stub(User, 'update').returns([1]);
+            let stubFinder = sinon.stub(User, 'findByPk').withArgs(rndId).returns(testUserList[rndId]);
+            await UserController.patchUser(req, res)
+            expect(stub.calledOnce).to.be.true;
+            expect(stubFinder.calledOnce).to.be.true;
+            expect(status.calledWith(200)).to.be.true;
+            expect(json.calledWith([1])).to.be.true;
         });
-        it('delete my user ... ', (done)=>{
-            let stub = sinon.stub(UserController, 'deleteUser');
-            stub.withArgs(rndId).returns({'msge': 'The user has been successfully deleted'})
-            let fn = UserController.deleteUser(rndId)
-            expect(fn).to.be.an('object');
-            expect(fn).to.have.property( 'msge', 'The user has been successfully deleted')
-            done();
+        it('delete my user ... ', async()=>{
+            req.params= {id: rndId}
+            let stub = sinon.stub(User, 'destroy').returns([1]);
+            let stubFinder = sinon.stub(User, 'findAll').returns(testUserList[rndId]);
+            await UserController.deleteUser(req, res)
+            expect(stub.calledOnce).to.be.true;
+            expect(stubFinder.calledOnce).to.be.true;
+            expect(status.calledWith(200)).to.be.true;
+            expect(json.calledWith({ msge: 'The user has been successfully deleted' }))
+                .to.be.true;
         });
     });
     describe('Testing users (failing cases)...', ()=>{
-        it(`GET/users/${invalidId} ... `, (done)=>{
-            let stub = sinon.stub(UserController, 'getUserById');
-            stub.withArgs(invalidId).returns({ msge: 'The query got no results. Im sory' });
-            let fn = UserController.getUserById(invalidId);
-            // expect(res.status).to.be.equal(200);
-            expect(fn).to.be.an('object');
-            expect(fn).to.have.property('msge', 'The query got no results. Im sory');
-            done()
+
+        it(`GET/users/${invalidId} ... `, async()=>{
+            req.params ={id: invalidId} 
+            let stub = sinon.stub(User, 'findByPk')
+                .withArgs(invalidId)
+                .returns(null);
+            await UserController.getUserById(req, res);
+
+            expect(stub.calledOnce).to.be.true;
+            expect(status.calledWith(404)).to.be.true;
+            expect(json.calledWith({ msge: 'The query got no results. Im sory' }))
+                .to.be.true;
         });
-        it(`PUT/users/${invalidId} ... `, (done)=>{
-            let stub = sinon.stub(UserController, 'updateUser');
-            let req = {
-                'firstName':"lala",
-                'lastName':"lastname",
-                'email': "email@gmail.com",
-                'photo': "img.com",
-                'password': "1234",
-                'roleId': 1,
+        it(`PUT/users/${invalidId} ... `, async()=>{
+            req = {
+                params: {id: invalidId},
+                body:{
+                    'firstName':"lala",
+                    'lastName':"lastname",
+                    'email': "email@gmail.com",
+                    'photo': "img.com",
+                    'password': "1234",
+                    'roleId': 1,
+                }
+            };
+            let stub = sinon.stub(User, 'update').returns([1]);
+            let stubFinder = sinon.stub(User, 'findAll').returns(null);
+            await UserController.updateUser(req, res)
+            expect(stub.notCalled).to.be.true;
+            expect(stubFinder.calledOnce).to.be.true;
+            expect(status.calledWith(400)).to.be.true;
+            expect(json.calledWith({ error: 'Invalid update!' })).to.be.true;
+        });
+        it(`PUT/users/${rndId} ... `, async()=>{
+            req = {
+                params: {id: rndId},
+                body:{
+                    'firstName':"lala",
+                    'lastName':"lastname",
+                    'email': "email@gmail.com",
+                    'photo': "img.com",
+                    'password': "1234",
+                    'roleId': 1,
+                    'invalidKey': true
+                }
             }
-            stub.withArgs(invalidId, req).returns( {error: 'Invalid update!'});
-            let fn = UserController.updateUser(invalidId, req)
-            // expect(res.status).to.be.equal(200);
-            expect(fn).to.be.an('object')
-            expect(fn).to.have.property( 'error', 'Invalid update!')
-            done();
+        let stub = sinon.stub(User, 'update').returns([1]);
+        let stubFinder = sinon.stub(User, 'findAll').returns(testUserList[rndId]);
+        await UserController.updateUser(req, res)
+        expect(stub.notCalled).to.be.true;
+        expect(stubFinder.calledOnce).to.be.true;
+        expect(status.calledWith(400)).to.be.true;
+        expect(json.calledWith({ error: 'Invalid update!' })).to.be.true;
         });
-        it(`PUT/users/${rndId} ... `, (done)=>{
-            let stub = sinon.stub(UserController, 'updateUser');
-            let req = {
-                'firstName':"lala",
-                'lastName':"lastname",
-                'email': "email@gmail.com",
-                'photo': "img.com",
-                'password': "1234",
-                'roleId': 1,
-                'invalidKey': true
-            }
-            stub.withArgs(rndId, req).returns( {error: 'Invalid update!'});
-            let fn = UserController.updateUser(rndId, req)
-            // expect(res.status).to.be.equal(200);
-            expect(fn).to.be.an('object')
-            expect(fn).to.have.property( 'error', 'Invalid update!')
-            done();
+        it(`PATCH/users/${invalidId} ... `, async()=>{
+            req = {
+                params: {id: invalidId},
+                body:{
+                    'firstName':"lala",
+                    'lastName':"lastname",
+                    'email': "email@gmail.com",
+                    'photo': "img.com",
+                    'password': "1234",
+                    'roleId': 1,
+                }
+            };
+            let stub = sinon.stub(User, 'update').returns([1]);
+            let stubFinder = sinon.stub(User, 'findByPk').withArgs(invalidId).returns(null);
+            await UserController.patchUser(req, res)
+            expect(stub.notCalled).to.be.true;
+            expect(stubFinder.calledOnce).to.be.true;
+            expect(status.calledWith(404)).to.be.true;
+            expect(json.calledWith({status: 'User not found'})).to.be.true;
         });
-        it('patch user ... ', (done)=>{
-            let stub = sinon.stub(UserController, 'updateUser');
-            let req = {
-                'firstName':"lala",
-                'lastName':"lastname",
-                'email': "email@gmail.com",
-                'photo': "img.com",
-                'password': "1234",
-                'roleId': 1,
-            }
-            stub.withArgs(invalidId, req).returns({status: 'User not found' });
-            let fn = UserController.updateUser(invalidId, req);
-            // expect(res.status).to.be.equal(200);
-            expect(fn).to.be.an('object');
-            expect(fn).to.have.property('status', 'User not found')
-            done();
-        });
-        it('delete my user ... ', (done)=>{
-            let stub = sinon.stub(UserController, 'deleteUser');
-            stub.withArgs(invalidId).returns({msge: 'An error has occured. The user doesnt exist'})
-            let fn = UserController.deleteUser(invalidId)
-            expect(fn).to.be.an('object');
-            expect(fn).to.have.property( 'msge', 'An error has occured. The user doesnt exist')
-            done();
+        it(`DELETE/users/${invalidId} ... `, async()=>{
+            req.params= {id: invalidId}
+            let stub = sinon.stub(User, 'destroy').returns([1]);
+            let stubFinder = sinon.stub(User, 'findAll').returns(null);
+            await UserController.deleteUser(req, res)
+            expect(stub.notCalled).to.be.true;
+            expect(stubFinder.calledOnce).to.be.true;
+            expect(status.calledWith(404)).to.be.true;
+            expect(json.calledWith({ msge: 'An error has occured. The user doesnt exist' }))
+                .to.be.true;
         });
     });
 })
