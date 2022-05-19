@@ -83,7 +83,7 @@ describe('Testing users  ...', ()=>{
                 }
             };
             let stubCreate = sinon.stub(User, 'create')
-                .returns(newUser);
+                .resolves(newUser);
             let stubMail = sinon.stub(welcomeMail, 'sendWelcomeMail')
                 .returns(true);
             let stubToken = sinon.stub(jwt, 'sign')
@@ -149,22 +149,21 @@ describe('Testing users  ...', ()=>{
                 }
             };
             let stubCreate = sinon.stub(User, 'create')
-                .returns(null);
+                .rejects(new Error('email must be unique'));
             let stubMail = sinon.stub(welcomeMail, 'sendWelcomeMail')
-                .returns(new Error('email must be unique'));
+                .returns(true);
             let stubToken = sinon.stub(jwt, 'sign')
                 .returns('token');
             let next = sinon.stub()
             await AuthControllers.signin(req, res, next)
             expect(stubCreate.calledOnce).to.be.true;
-            expect(stubMail.calledOnce).to.be.true;
+            expect(stubMail.notCalled).to.be.true;
             expect(stubToken.notCalled).to.be.true;
             expect(next.calledOnce).to.be.true
-            
+
             const errArg = next.firstCall.args[0];
             expect(errArg).to.be.instanceof(Error);
-            expect(errArg.message).to.equal('email must be unique')
-            expect(errArg.status(500)).to.be.true;
+            expect(errArg.message).to.equal('email must be unique');
         });
     });
 });
