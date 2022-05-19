@@ -43,17 +43,20 @@ router
   .get([isAdminRole], controller.getOne)
   .patch([isAdminRole], controller.update);
 
-router.put('/:id', [
-  isAdminRole,
-  check('name', 'name can´t be empty').not().isEmpty().trim(),
-  check('content', 'content can´t be empty').not().isEmpty().trim(),
-  check('image', 'image can´t be empty').not().isEmpty().trim(),
-  check('image', 'image must be string').isString().trim(),
-  check('image', 'URL invalid').custom( validateUrl ),
-  fieldsValidate
-], controller.update);
+router.put(
+  '/:id',
+  [
+    isAdminRole,
+    check('name', 'name can´t be empty').not().isEmpty().trim(),
+    check('content', 'content can´t be empty').not().isEmpty().trim(),
+    check('image', 'image can´t be empty').not().isEmpty().trim(),
+    check('image', 'image must be string').isString().trim(),
+    check('image', 'URL invalid').custom(validateUrl),
+    fieldsValidate
+  ],
+  controller.update
+);
 
 router.route('/category/:categoryId').get(controller.getByCategory);
-
 
 module.exports = router;
