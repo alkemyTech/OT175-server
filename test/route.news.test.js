@@ -21,7 +21,7 @@ describe('News route test', function () {
       sandbox.restore();
     });
 
-    it.only('should call stubbed function at with empty response', async function () {
+    it('should call stubbed function at with empty response', async function () {
       // Arrange
       News.findAndCountAll = sandbox
           .stub()
