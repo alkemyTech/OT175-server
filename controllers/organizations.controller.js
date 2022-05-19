@@ -13,12 +13,11 @@ class OrganizationController {
     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
     }
-    if (!organizations) {
-      res
+    if (!organizations)
+      return res
         .status(httpCodes.NOT_FOUND)
         .json({ msg: "There aren't registered organizations" });
-    }
-    return HttpStatus.HTTP_OK(res, organizations);
+     res.status(httpCodes.OK).json({organizations});
   }
 
   static async getOrganization(req, res = response) {
@@ -34,11 +33,10 @@ class OrganizationController {
         where: { organizationId: id },
         attributes: ['id', 'text', 'imageUrl', 'order'],
       });
-      if (!organization) {
-        res
+      if (!organization)
+        return res
           .status(httpCodes.NOT_FOUND)
           .json({ msg: "There aren't registered organization" });
-      }
     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error);
     }
@@ -79,14 +77,16 @@ class OrganizationController {
     res.status(httpCodes.CREATED).json({ msg: 'Organization created' });
   }
 
- static async deleteOrganization(req, res = response) {
+  static async deleteOrganization(req, res = response) {
     const { id } = req.params;
     let organizationResponse;
     try {
       organizationResponse = await Organization.findByPk(id);
 
       if (!organizationResponse) {
-        return res.status(httpCodes.NOT_FOUND).json({ msg: 'the organization you are trying to register does not exist' });
+        return res.status(httpCodes.NOT_FOUND).json({
+          msg: 'the organization you are trying to register does not exist',
+        });
       }
       await Organization.destroy({
         where: {
