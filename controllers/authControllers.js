@@ -14,41 +14,39 @@ const contact =
 
 class AuthControllers {
   static async signin(req, res, next) {
-    const title = `Bienvenido ${req.body.firstName}`
-    try {
-      const newUser = await User.create({
+    const title = `Bienvenido ${req.body.firstName}`;
+      await User.create({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
         image: req.body.image,
         password: req.body.password,
         roleId: 2,
-      });
-      let {id, roleId} = newUser;
-      const token = jwt.sign({ id, roleId }, process.env.JWT_SECRET, {
-        expiresIn: "8h",
-      });
-      res
-        .status(200)
-        .json({
-          ...newUser.dataValues,
-          token :token
+      }).then(newUser=>{
+        let {id, roleId} = newUser;
+        const token = jwt.sign({ id, roleId }, process.env.JWT_SECRET, {
+          expiresIn: "8h",
         });
-    } catch (error) {
-      next(error);
-    }
-    try {
-       welcomeMail.sendWelcomeMail(
-        req.body.email,
-        emailTitle,
-        title,
-        text,
-        contact
-      );
-    } catch (err) {
-     res.status(404).send("no se pudo enviar el mensaje");
-    }
-    
+        res
+          .status(200)
+          .json({
+            ...newUser.dataValues,
+            token :token
+          });
+        if(newUser){
+          try {
+            welcomeMail.sendWelcomeMail(
+              req.body.email,
+              emailTitle,
+              title,
+              text,
+              contact
+            );
+          } catch (err) {
+          res.status(404).send("no se pudo enviar el mensaje");
+          }
+        };
+      }).catch(err=>next(err));
   }
 
   static async getDataUser(req, res) {
@@ -82,7 +80,6 @@ class AuthControllers {
         throw new Error("User/email not found");
       } else {
         let passwordIsOk = bcrypt.compareSync(req.body.password, user.password);
-        console.log(passwordIsOk)
         if (passwordIsOk) {
           const { id, roleId } = user;
           const token = jwt.sign({ id, roleId }, process.env.JWT_SECRET, {
@@ -96,7 +93,6 @@ class AuthControllers {
       }
     } catch (error) {
       res.status(httpStatusCodes.NOT_FOUND).json({ ok: false });
-      console.log(error);
     }
   }
 }
