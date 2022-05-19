@@ -136,4 +136,32 @@ describe('Testing users  ...', ()=>{
             expect(status.calledWith(200)).to.be.true
         })
     });
+    describe('Testing auth (failing cases)...', ()=>{
+        it('signin (reapeted email)',async()=>{
+            let ExistingUser = testUserList[rndId]
+            req = {
+                body:{ 
+                    "firstName": "New User",
+                    "lastName": "Not real",
+                    "email": ExistingUser.email,
+                    "image": "image.png",
+                    "password": "12345"
+                }
+            };
+            let stubCreate = sinon.stub(User, 'create')
+                .returns(null);
+            let stubMail = sinon.stub(welcomeMail, 'sendWelcomeMail')
+                .returns(Error);
+            let stubToken = sinon.stub(jwt, 'sign')
+                .returns('token');
+            let next = sinon.spy()
+            await AuthControllers.signin(req, res, next)
+            expect(stubCreate.calledOnce).to.be.true;
+            expect(stubMail.notCalled).to.be.true;
+            expect(stubToken.notCalled).to.be.true;
+            expect(next.calledWith({res}
+            )).to.be.true;
+            expect(status.calledWith(200)).to.be.true;
+        });
+    });
 });
