@@ -16,7 +16,7 @@ describe('News Controller test', function () {
     status = sinon.stub();
     json = sinon.spy();
     res = { json, status };
-    //status.returns(res);
+    status.returns(res);
 
     const body = {
       name: 'news name 01',

@@ -53,7 +53,6 @@ class NewsCtrl {
         urlNextPage: host + req.baseUrl + '?page=' + nextPage
       });
     } catch (err) {
-      //console.error(err);
       return res.status(500).send('internal server error. could not get News');
     }
   }

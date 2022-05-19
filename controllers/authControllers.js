@@ -66,7 +66,6 @@ class AuthControllers {
       res.status(200).json(user);
     }
     } catch (err) {
-      console.error(err)
       res.status(401).json({
         msg: "There was a problem getting the user data, check with the administrator",
       });
