@@ -117,7 +117,7 @@ describe('Testing users  ...', ()=>{
             expect(json.calledWith(testUserList[decodedPayload.id]));
             expect(status.calledWith(200)).to.be.true;
         });
-        it(`login/${rndId}`, async()=>{
+        it(`login `, async()=>{
             let targetUser = testUserList[rndId]
             req = {
                 body:{ 
@@ -164,6 +164,55 @@ describe('Testing users  ...', ()=>{
             const errArg = next.firstCall.args[0];
             expect(errArg).to.be.instanceof(Error);
             expect(errArg.message).to.equal('email must be unique');
+        });
+        it('getDataUser(invalid token)', async()=>{
+            req = {
+                headers: {authorization: 'Bearer invalidToken'},
+            };
+            let stubToken = sinon.stub(jwt, 'verify')
+                .throws(new Error('invalid credentials'));
+            let stub = sinon.stub(User, 'findOne')
+                .returns([]);
+            await AuthControllers.getDataUser(req, res)
+            expect(stubToken.calledOnce).to.be.true;
+            expect(stubToken).to.throw(Error);
+            expect(stub.notCalled).to.be.true;
+            expect(status.calledWith(401)).to.be.true;
+        });
+        it(`login(invalid email)`, async()=>{
+            req = {
+                body:{ 
+                    "email": "fakeemail@gmail.com",
+                    "password": "12345"
+                }
+            };
+            let stub = sinon.stub(User, 'findOne')
+                .returns(null);
+            let stubToken = sinon.stub(jwt, 'sign')
+                .returns('token');
+            await AuthControllers.login(req, res)
+            expect(stub.calledOnce).to.be.true;
+            expect(stubToken.notCalled).to.be.true;
+            expect(json.calledWith({ ok: false })).to.be.true;
+            expect(status.calledWith(404)).to.be.true
+        });
+        it(`login (invalid password)`, async()=>{
+            let targetUser = testUserList[rndId]
+            req = {
+                body:{ 
+                    "email": targetUser.email,
+                    "password": "54321"
+                }
+            };
+            let stub = sinon.stub(User, 'findOne')
+                .returns(targetUser);
+            let stubToken = sinon.stub(jwt, 'sign')
+                .returns('token');
+            await AuthControllers.login(req, res)
+            expect(stub.calledOnce).to.be.true;
+            expect(stubToken.notCalled).to.be.true;
+            expect(json.calledWith({msg: 'wrong password'})).to.be.true;
+            expect(status.calledWith(401)).to.be.true
         });
     });
 });

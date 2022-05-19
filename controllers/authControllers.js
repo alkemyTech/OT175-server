@@ -50,22 +50,24 @@ class AuthControllers {
   }
 
   static async getDataUser(req, res) {
+    try {
     const token = req.headers.authorization.split(" ")[1];
     const jwtDecoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findOne({
-      where: { id: jwtDecoded.id },
-      include: [
-        {
-          model: Role,
-          as: "role",
-        },
-      ],
-    });
-
-    try {
+    if(jwtDecoded){
+      const user = await User.findOne({
+        where: { id: jwtDecoded.id },
+        include: [
+          {
+            model: Role,
+            as: "role",
+          },
+        ],
+      });
       res.status(200).json(user);
+    }
     } catch (err) {
-      res.json({
+      console.error(err)
+      res.status(401).json({
         msg: "There was a problem getting the user data, check with the administrator",
       });
     }
@@ -88,7 +90,7 @@ class AuthControllers {
 
           res.status(200).json( token );
         } else {
-          throw new Error("Invalid password");
+          res.status(401).json({ msg : 'wrong password'});
         }
       }
     } catch (error) {
