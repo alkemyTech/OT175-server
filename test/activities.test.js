@@ -33,7 +33,7 @@ describe('Activities workflow tests', () => {
             sinon.verifyAndRestore(); 
         });
 
-        it('POST /activities: should add a new actvitie in DB', async() => {
+        it('POST /activities: should add a new actvity in DB', async() => {
             const req = {
                 body: body
             };
