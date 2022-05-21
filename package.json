@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "test": "nyc --reporter=text mocha"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.6.2",
     "aws-sdk": "^2.1118.0",
     "bcrypt": "^5.0.1",
+    "chai-http": "^4.3.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
@@ -22,10 +24,17 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.1",
     "mysql2": "^2.2.3",
-    "sequelize": "^6.3.5"
+    "node-base64-image": "^2.0.4",
+    "sequelize": "^6.3.5",
+    "swagger-jsdoc": "^6.2.1",
+    "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0",
     "nodemon": "^2.0.15",
-    "sequelize-cli": "^6.2.0"
+    "nyc": "^15.1.0",
+    "sequelize-cli": "^6.2.0",
+    "sinon": "^14.0.0"
   }
 }

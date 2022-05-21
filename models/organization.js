@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Organization extends Model {};
   Organization.init({
@@ -12,6 +10,9 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     welcomeText: DataTypes.TEXT,
     aboutUsText: DataTypes.TEXT,
+    urlFacebook: DataTypes.TEXT,    
+    urlLinkedin: DataTypes.TEXT,
+    urlInstagram: DataTypes.TEXT,
     deletedAt: DataTypes.DATE
   }, {
     sequelize,

@@ -1,86 +1,94 @@
-const { response } = require("express");
-const HttpStatus = require("../common/handleError");
-const models = require("../models");
-const { Organization } = models;
+const { response } = require('express');
+const HttpStatus = require('../common/handleError');
+const httpCodes = require('../common/httpCodes');
+const models = require('../models');
+const slides = require('../models/slides');
+const { Organization, Slides } = models;
 
 class OrganizationController {
-  constructor() {}
-
-  async getOrganizations(req, res) {
+  static async getOrganizations(req, res) {
     let organizations;
     try {
       organizations = await Organization.findAll();
     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
     }
-    return HttpStatus.HTTP_OK(res, organizations);
+    if (!organizations)
+      return res
+        .status(httpCodes.NOT_FOUND)
+        .json({ msg: "There aren't registered organizations" });
+     res.status(httpCodes.OK).json({organizations});
   }
 
-  async getOrganization(req, res = response) {
+  static async getOrganization(req, res = response) {
     const { id } = req.params;
     let organization;
+    let slides;
     try {
       organization = await Organization.findOne({
         where: { id: id },
-        attributes: ["name", "phone", "email", "address"],
+        attributes: ['name', 'phone', 'email', 'address'],
       });
-      if (!organization) {
-        return HttpStatus.HTTP_BAD_REQUEST(res);
-      }
+      slides = await Slides.findAll({
+        where: { organizationId: id },
+        attributes: ['id', 'text', 'imageUrl', 'order'],
+      });
+      if (!organization)
+        return res
+          .status(httpCodes.NOT_FOUND)
+          .json({ msg: "There aren't registered organization" });
     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error);
     }
-    return HttpStatus.HTTP_OK(res, organization);
+    slides.sort((a, b) => {
+      return a.order - b.order;
+    });
+    res.status(httpCodes.OK).json({ organization, slides });
   }
 
-  async updateOrganization(req, res = response) {
+  static async updateOrganization(req, res = response) {
     const { id } = req.params;
     const body = req.body;
-    let organization;
-    let organizationResponse;
+
     try {
-      organization = await Organization.update(body, {
-        where: { id: id },
+      await Organization.update(body, {
+        where: { id },
       });
-
-      organizationResponse = await Organization.findByPk(id);
-
-      if (!organizationResponse) {
-        return HttpStatus.HTTP_BAD_REQUEST(res);
-      }
     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
     }
-    return HttpStatus.HTTP_OK(res, organizationResponse);
+    res.status(httpCodes.OK).json({ msg: 'Organization updated' });
   }
 
-  async createOrganization(req, res = response) {
-
+  static async createOrganization(req, res = response) {
     const { createdAt, updatedAt, ...body } = req.body;
     const data = {
       ...body,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+
     let organization;
     try {
       organization = await Organization.create(data);
     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
     }
-    return HttpStatus.HTTP_CREATE(res, organization);
+    res.status(httpCodes.CREATED).json({ msg: 'Organization created' });
   }
 
-  async deleteOrganization(req, res = response) {
+  static async deleteOrganization(req, res = response) {
     const { id } = req.params;
     let organizationResponse;
     try {
       organizationResponse = await Organization.findByPk(id);
 
       if (!organizationResponse) {
-        return HttpStatus.HTTP_BAD_REQUEST(res);
+        return res.status(httpCodes.NOT_FOUND).json({
+          msg: 'the organization you are trying to register does not exist',
+        });
       }
-      const organization = await Organization.destroy({
+      await Organization.destroy({
         where: {
           id: id,
         },
@@ -88,7 +96,7 @@ class OrganizationController {
     } catch (error) {
       return HttpStatus.HTTP_ERROR_INTERNAL(error, res);
     }
-    return HttpStatus.HTTP_OK(res, organizationResponse);
+    return res.status(httpCodes.OK).json({ msg: 'Organization deleted' });
   }
 }
 
